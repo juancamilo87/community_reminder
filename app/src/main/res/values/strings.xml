@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Community Reminder</string>
+    <string name="title_activity_main">Menu</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_emergency_button">EmergencyButton</string>
 </resources>

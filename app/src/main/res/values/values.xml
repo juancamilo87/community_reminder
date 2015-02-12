@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="taps_for_emergency">3</integer>
+    <integer name="seconds_for_emergency">2</integer>
+
+
+</resources>
