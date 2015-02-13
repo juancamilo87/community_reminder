@@ -33,6 +33,8 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -48,5 +50,10 @@ public class MainActivity extends ActionBarActivity {
     public void goToTemperature(View view)
     {
 
+    }
+
+    public void goToSettingsActivity(View view){
+        Intent intent = new Intent (this, SettingsActivity.class);
+        startActivity(intent);
     }
 }

@@ -18,7 +18,7 @@
         android:columnCount="2"
         android:layout_below="@id/txt_title"
         android:layout_centerHorizontal="true"
-        >
+        android:id="@+id/gridLayout">
         <Button
             android:text="Emergency\nButton"
             android:layout_width="wrap_content"
@@ -38,6 +38,16 @@
             android:onClick="goToTemperature"
             android:padding="20dp"
             />
+        <Button
+            android:layout_width="123dp"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:id="@+id/btnSettings"
+            android:onClick="goToSettingsActivity"
+            android:layout_below="@+id/gridLayout"
+            android:layout_alignRight="@+id/txt_title"
+            android:layout_alignEnd="@+id/txt_title"
+            android:layout_marginLeft="20dp" />
         </GridLayout>
 
 </RelativeLayout>
