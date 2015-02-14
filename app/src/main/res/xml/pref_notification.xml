@@ -26,7 +26,7 @@
     <Preference
         android:title="Home Status"
         android:summary="Choose your home WiFi access point"
-        android:key="MAC" >
+        android:key="homeStatus" >
         <intent android:targetClass="fi.oulu.acp.communityreminder.HomeStatusActivity"
                 android:targetPackage="fi.oulu.acp.communityreminder"/>
     </Preference>

@@ -28,6 +28,7 @@ public class HomeStatusActivity extends ActionBarActivity {
     private ListView lstWifi;
     private ArrayAdapter<String> adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +41,14 @@ public class HomeStatusActivity extends ActionBarActivity {
         lstWifi.setOnItemClickListener(deviceClickListener);
 
         //Perform discovery
-        wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         doDiscovery();
     }
 
     private void doDiscovery(){
+        wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()){
+            wifiManager.setWifiEnabled(true);
+        }
         scanReceiver = new WifiScanReceiver();
         registerReceiver(scanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
@@ -73,11 +77,17 @@ public class HomeStatusActivity extends ActionBarActivity {
     }
 
     public class WifiScanReceiver extends BroadcastReceiver {
+        public WifiScanReceiver(){
+            super();
+        }
+
         @Override
         public void onReceive(Context context, Intent intent) {
-            List<ScanResult> wifiScanList = wifiManager.getScanResults();
-            for(int i = 0; i < wifiScanList.size(); i++){
-                adapter.add(wifiScanList.get(i).SSID + "\n" + wifiManager.getConnectionInfo().getMacAddress());
+            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
+                List<ScanResult> wifiScanList = wifiManager.getScanResults();
+                for(int i = 0; i < wifiScanList.size(); i++){
+                    adapter.add(wifiScanList.get(i).SSID + "\n" + wifiScanList.get(i).BSSID);
+                }
             }
         }
     }
@@ -85,15 +95,15 @@ public class HomeStatusActivity extends ActionBarActivity {
     private AdapterView.OnItemClickListener deviceClickListener = new AdapterView.OnItemClickListener(){
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
             //Get the device MAC address which is 17 last characters in the View
-            String info = ((TextView)v).getText().toString();
+            String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 
             //Save MAC to preferences
             if (!address.equals("")){
-                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = getSharedPreferences("fi.oulu.acp.communityreminder", MODE_PRIVATE).edit();
                 editor.putString("MAC", address);
-                editor.apply();
-                Toast.makeText(getApplicationContext(), "Your home WiFi has been chosen", Toast.LENGTH_SHORT).show();
+                editor.commit();
+                Toast.makeText(getApplicationContext(), "Your Home WiFi Has Been Chosen", Toast.LENGTH_SHORT).show();
             }
             finish();
         }

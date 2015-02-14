@@ -39,14 +39,17 @@
             android:value="fi.oulu.acp.communityreminder.HomeStatusActivity" >
         </activity>
 
+        <receiver android:name=".HomeStatusReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".NotificationService"
             android:enabled="true"
             android:exported="true" >
-        </service>
-        <service
-            android:name=".MyIntentService"
-            android:exported="false" >
         </service>
     </application>
 
