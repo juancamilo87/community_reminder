@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/no_use3"
+    android:weightSum="1"
+    android:background="@mipmap/background"
+    android:gravity="bottom">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="201dp"
+        android:id="@+id/no_use4"
+        android:layout_gravity="center_horizontal"
+        android:weightSum="1"
+        android:layout_weight="1.00">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="109dp"
+            android:id="@+id/imageView"
+            android:background="@mipmap/app_icon" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_weight="0.11"
+            android:gravity="center"
+            android:id="@+id/no_use5">
+
+            <EditText
+                android:layout_width="275dp"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:ems="10"
+                android:id="@+id/editPhoneNumber"
+                android:hint="Phone Number"
+                android:layout_marginBottom="10dp" />
+
+            <Button
+                android:layout_width="273dp"
+                android:layout_height="wrap_content"
+                android:text="Verify your phone number"
+                android:id="@+id/verify_button"
+                android:alpha=".80"
+                android:background="@mipmap/icon_sett"
+                android:textColor="#fff0fff0" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/no_use1"
+    android:weightSum="1"
+    android:background="@mipmap/background"
+    android:gravity="bottom">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="201dp"
+        android:id="@+id/no_use2"
+        android:layout_gravity="center_horizontal"
+        android:weightSum="1"
+        android:layout_weight="0.02">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="109dp"
+            android:id="@+id/imageView"
+            android:background="@mipmap/app_icon" />
+
+        <Button
+            android:layout_width="273dp"
+            android:layout_height="wrap_content"
+            android:text="Sign in with phone number"
+            android:id="@+id/sign_in_button"
+            android:layout_gravity="center_horizontal"
+            android:alpha=".80"
+            android:background="#ff01e86e"
+            android:textColor="#fff0fff0" />
+    </LinearLayout>
+
+</LinearLayout>
