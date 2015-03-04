@@ -27,6 +27,7 @@ public class HomeStatusActivity extends ActionBarActivity {
     private WifiScanReceiver scanReceiver;
     private ListView lstWifi;
     private ArrayAdapter<String> adapter;
+    public static final String HOME_STATUS_ACTION = "home_status_action";
 
 
     @Override

@@ -39,15 +39,25 @@
             android:value="fi.oulu.acp.communityreminder.HomeStatusActivity" >
         </activity>
 
-        <receiver android:name=".HomeStatusReceiver">
+        <receiver android:name=".HomeStatusReceiver" >
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <activity
+            android:name=".PedometerActivity"
+            android:label="@string/title_activity_pedometer" >
+        </activity>
+
+        <service
+            android:name=".StepService"
             android:enabled="true"
             android:exported="true" >
         </service>

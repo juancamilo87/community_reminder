@@ -56,4 +56,9 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent (this, SettingsActivity.class);
         startActivity(intent);
     }
+
+    public void goToPedometerActivity(View view){
+        Intent intent = new Intent(this, PedometerActivity.class);
+        startActivity(intent);
+    }
 }
