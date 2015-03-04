@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/homescreen_background"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/no_use6"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:id="@+id/imageView2"
+            android:background="@mipmap/app_new_icon"
+            android:alpha="0.85" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="173dp"
+        android:weightSum="1"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/homelayer1"
+        android:gravity="center"
+        android:alpha="0.85">
+
+        <ImageButton
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:id="@+id/NotificationButton"
+            android:layout_gravity="center_vertical"
+            android:background="@mipmap/ic_notification"
+            android:layout_margin="12dp" />
+
+        <ImageButton
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:id="@+id/PedometerButton"
+            android:layout_gravity="center_vertical"
+            android:background="@mipmap/ic_pedometer"
+            android:layout_margin="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/homelayer2"
+        android:alpha="0.85">
+
+        <ImageButton
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:id="@+id/ContactsButton"
+            android:layout_gravity="center_vertical"
+            android:background="@mipmap/ic_contacts"
+            android:layout_margin="12dp" />
+
+        <ImageButton
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:id="@+id/SettingsButton"
+            android:layout_gravity="center_vertical"
+            android:background="@mipmap/ic_settings"
+            android:layout_margin="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:gravity="center"
+        android:id="@+id/homelayer3"
+        android:alpha="0.85">
+
+        <ImageButton
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:id="@+id/HealthEmergencyButton"
+            android:layout_gravity="center_vertical"
+            android:background="@mipmap/ic_health_emergency"
+            android:layout_margin="12dp" />
+
+        <ImageButton
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:id="@+id/LifeProblemButton"
+            android:layout_gravity="center_vertical"
+            android:background="@mipmap/ic_life_problem"
+            android:layout_margin="12dp"
+            android:layout_marginBottom="20dp"
+            android:focusableInTouchMode="false" />
+    </LinearLayout>
+
+</LinearLayout>

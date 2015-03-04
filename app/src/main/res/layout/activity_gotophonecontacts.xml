@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/homescreen_background"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/no_use6"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:id="@+id/imageView2"
+            android:background="@mipmap/icon_cont"
+            android:alpha="0.85" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#ffbebebe"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Choose Available Contacts"
+            android:id="@+id/textView4" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/secondlayout">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/phonecontacts"
+            android:divider="#34212520"
+            android:dividerHeight="1.3dp"
+            android:background="#fff8fbff" />
+    </RelativeLayout>
+</LinearLayout>

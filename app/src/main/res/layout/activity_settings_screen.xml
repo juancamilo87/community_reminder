@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/homescreen_background"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/no_use6"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:id="@+id/imageView2"
+            android:background="@mipmap/icon_sett"
+            android:alpha="0.85" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#c6020202">
+
+        <CheckBox
+                android:id="@+id/allowpushing_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="9dp"
+                android:button="@drawable/checkbox_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Allow pushing message"
+            android:id="@+id/allowpushing_text"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#b3020202" >
+
+        <CheckBox
+            android:id="@+id/homewifi_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="9dp"
+            android:button="@drawable/checkbox_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home Wi-Fi"
+            android:id="@+id/homewifi_text"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#c7020202" >
+
+        <CheckBox
+            android:id="@+id/newlocation_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="9dp"
+            android:button="@drawable/checkbox_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New location"
+            android:id="@+id/newlocation_text"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#b3020202" >
+
+        <CheckBox
+            android:id="@+id/temperature_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="9dp"
+            android:button="@drawable/checkbox_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temperature detecting"
+            android:id="@+id/temperature_text"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#c6020202" >
+
+        <CheckBox
+            android:id="@+id/accident_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="9dp"
+            android:button="@drawable/checkbox_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accidental falls"
+            android:id="@+id/accident_text"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#b3020202" >
+
+        <CheckBox
+            android:id="@+id/lowbattery_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="9dp"
+            android:button="@drawable/checkbox_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low battery"
+            android:id="@+id/lowbattery_text"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#da020202" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log out"
+            android:id="@+id/logout_text"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#b3020202" >
+
+    </RelativeLayout>
+
+</LinearLayout>
