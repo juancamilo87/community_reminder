@@ -45,8 +45,8 @@
                 android:text="Verify your phone number"
                 android:id="@+id/verify_button"
                 android:alpha=".80"
-                android:background="@mipmap/icon_sett"
-                android:textColor="#fff0fff0" />
+                android:textColor="#fff0fff0"
+                android:background="#ff01e86e" />
 
         </LinearLayout>
 

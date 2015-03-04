@@ -22,4 +22,130 @@
             android:alpha="0.85" />
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:id="@+id/firstlayout">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#3BAF4A"
+            android:alpha="0.8"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/secondlayout"
+            android:gravity="center"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Steps Here"
+                android:id="@+id/getsteps"
+                android:textSize="45dp"
+                android:layout_below="@+id/textView"
+                android:layout_toRightOf="@+id/imageView3"
+                android:layout_toEndOf="@+id/imageView3"
+                android:layout_marginTop="11dp"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Steps Today"
+                android:id="@+id/textView"
+                android:layout_alignParentTop="true"
+                android:layout_alignLeft="@+id/getsteps"
+                android:layout_alignStart="@+id/getsteps"
+                android:layout_marginTop="15dp"
+                android:textColor="#ffffff" />
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="100dp"
+                android:id="@+id/imageView3"
+                android:background="@mipmap/steps"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="15dp"
+                android:adjustViewBounds="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Tips:"
+                android:id="@+id/textView2"
+                android:layout_marginTop="30dp"
+                android:layout_below="@+id/imageView3"
+                android:layout_alignLeft="@+id/imageView3"
+                android:layout_alignStart="@+id/imageView3"
+                android:layout_marginLeft="5dp"
+                android:textColor="#ffffff" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Experts recommend 10000 steps every day."
+                android:id="@+id/textView3"
+                android:layout_below="@+id/textView2"
+                android:layout_alignLeft="@+id/textView2"
+                android:layout_alignStart="@+id/textView2"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:textColor="#ffffff" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_id"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="300"
+            android:progress="50"
+            android:secondaryProgress="70"
+            android:layout_marginTop="130dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ffeef1ff" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/middlelayout">
+
+        <Button
+            android:layout_width="243dp"
+            android:layout_height="wrap_content"
+            android:text="Reset your goal"
+            android:id="@+id/resetgoal"
+            android:layout_gravity="center_horizontal"
+            android:background="#b83baf4a"
+            android:layout_marginTop="15dp"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
+        <Button
+            android:layout_width="245dp"
+            android:layout_height="wrap_content"
+            android:text="Set goal for your family"
+            android:id="@+id/setgoalforfamily"
+            android:layout_gravity="center_horizontal"
+            android:background="#b93baf4a"
+            android:layout_marginTop="15dp"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>
