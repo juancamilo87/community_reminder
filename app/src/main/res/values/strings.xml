@@ -8,5 +8,6 @@
     <string name="title_activity_emergency_button">EmergencyButton</string>
     <string name="title_activity_home_status">HomeStatus</string>
     <string name="title_activity_pedometer">PedometerActivity</string>
+    <string name="title_activity_temperature">TemperatureActivity</string>
 
 </resources>

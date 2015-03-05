@@ -49,7 +49,8 @@ public class MainActivity extends ActionBarActivity {
 
     public void goToTemperature(View view)
     {
-
+        Intent intent = new Intent(this, TemperatureActivity.class);
+        startActivity(intent);
     }
 
     public void goToSettingsActivity(View view){
