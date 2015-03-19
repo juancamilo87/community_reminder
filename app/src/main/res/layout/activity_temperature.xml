@@ -6,9 +6,67 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="fi.oulu.acp.communityreminder.TemperatureActivity"
     android:orientation="vertical"
-    android:id="@+id/linear_layout_temps">
+    android:id="@+id/linear_layout_temps"
+    android:theme="@style/Base.Theme.AppCompat.Light">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView android:text="Gather Temp Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="35dp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="40dp"/>
+
+    <TextView android:text="Temperature:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp" />
+    <EditText android:inputType="text" android:layout_width="100dp"
+        android:layout_height="wrap_content" android:textSize="20dp"
+        android:id="@+id/ttemp"
+        android:text=""
+        android:layout_marginBottom="40dp"/>
+
+    <TextView android:text="Performance:" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:textSize="30dp"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:id="@+id/rtemp"
+        android:layout_marginBottom="40dp"
+        >
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low"
+            android:textSize="20dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/rlow"
+            android:layout_marginTop="10dp"
+            />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="High"
+            android:textSize="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:id="@+id/rhigh"
+            android:layout_marginTop="10dp"
+            />
+
+        </RadioGroup>
+
+    <Button
+        android:id="@+id/collect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start data collection"
+        android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>

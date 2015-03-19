@@ -6,7 +6,9 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -31,6 +33,14 @@
                 android:value="fi.oulu.acp.communityreminder.MainActivity" />
         </activity>
         <activity
+            android:name=".SignupActivity"
+            android:label="@string/title_activity_signup"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fi.oulu.acp.communityreminder.MainActivity" />
+        </activity>
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
@@ -45,6 +55,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
 
         <service
             android:name=".NotificationService"
@@ -63,8 +74,6 @@
             android:exported="true" >
         </service>
 
-        <service android:enabled="true" android:name=".TemperatureService" />
-
         <activity
             android:name=".TemperatureActivity"
             android:label="@string/title_activity_temperature"
@@ -73,6 +82,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fi.oulu.acp.communityreminder.MainActivity" />
         </activity>
+
+        <receiver android:name=".TemperatureBroadcastReceiver" />
+        <receiver android:name=".TemperatureNotificationManager" />
     </application>
 
 </manifest>
