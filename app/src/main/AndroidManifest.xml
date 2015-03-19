@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
 
     <application
         android:allowBackup="true"
@@ -63,6 +65,11 @@
             android:exported="true" >
         </service>
 
+        <service
+            android:name=".ChangeContactService"
+            android:enabled="true">
+        </service>
+
         <activity
             android:name=".PedometerActivity"
             android:label="@string/title_activity_pedometer" >
@@ -81,6 +88,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fi.oulu.acp.communityreminder.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".AddContactListActivity"
+            android:label="@string/title_activity_add_contacts" >
         </activity>
 
         <receiver android:name=".TemperatureBroadcastReceiver" />
