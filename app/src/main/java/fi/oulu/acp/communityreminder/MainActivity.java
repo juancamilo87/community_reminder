@@ -198,4 +198,14 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, PedometerActivity.class);
         startActivity(intent);
     }
+
+    public void goToSignUp(View view){
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToContactList(View view){
+        Intent intent = new Intent(this, AddContactListActivity.class);
+        startActivity(intent);
+    }
 }

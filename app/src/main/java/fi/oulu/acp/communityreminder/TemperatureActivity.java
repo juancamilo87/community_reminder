@@ -1,150 +1,172 @@
 package fi.oulu.acp.communityreminder;
 
+import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Typeface;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.BatteryManager;
-import android.support.v7.app.ActionBarActivity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ActionMenuView;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.List;
 
 
-public class TemperatureActivity extends ActionBarActivity implements SensorEventListener {
+public class TemperatureActivity extends Activity {
 
-    private SensorManager mSensorManager;
-    private Sensor mTemp;
 
-    private BroadcastReceiver mBatInfoReceiver;
-    private LinearLayout temperatureList;
-    private long startTime;
     private AlarmManager alarm;
     private PendingIntent pintent;
+    private EditText environmentTemperature;
+    private RadioGroup performance;
+    private SharedPreferences prefs;
+
+    public static final int NOTIFICATION_ID = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
-        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        temperatureList = (LinearLayout) findViewById(R.id.linear_layout_temps);
-        startTime = System.currentTimeMillis();
-        Intent intent = new Intent(this, TemperatureService.class);
-        pintent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_temperature, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        environmentTemperature = (EditText) findViewById(R.id.ttemp);
+        performance = (RadioGroup) findViewById(R.id.rtemp);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean gathering = prefs.getBoolean("gathering-data", false);
+        if(gathering){
+            disableUI();
         }
+        Button btnGather = (Button) findViewById(R.id.collect_button);
+        btnGather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDataCollection();
+            }
+        });
+//        Intent intent = new Intent(this, TemperatureService.class);
+//        pintent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.remove("tempHistory");
+//        editor.commit();
 
-        return super.onOptionsItemSelected(item);
     }
+
+
+    private void disableUI(){
+        environmentTemperature.setEnabled(false);
+        for(int i = 0; i < performance.getChildCount(); i++){
+            ((RadioButton)performance.getChildAt(i)).setEnabled(false);
+        }
+        Button btn = (Button)findViewById(R.id.collect_button);
+        btn.setEnabled(false);
+        btn.setText("Gathering data...");
+    }
+    private void enableUI(){
+        environmentTemperature.setEnabled(true);
+        for(int i = 0; i < performance.getChildCount(); i++){
+            ((RadioButton)performance.getChildAt(i)).setEnabled(true);
+        }
+        Button btn = (Button)findViewById(R.id.collect_button);
+        btn.setEnabled(true);
+        btn.setText("Start data collection");
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        mTemp = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
-        if(mTemp == null)
-        {
-            Log.d("Sensor", "No ambient temperature sensor");
-            mTemp = mSensorManager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
-        }
-        if(mTemp == null)
-        {
-            Calendar cal = Calendar.getInstance();
-
-
-
-
-            alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            // schedule for every 5 seconds
-            alarm.cancel(pintent);
-            alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 60 * 1000, pintent);
-
-
-            Log.d("Sensor", "No internal temperature sensor");
-
+        boolean gathering = prefs.getBoolean("gathering-data", false);
+        if(gathering){
+            disableUI();
         }
         else
         {
-            mSensorManager.registerListener(this,
-                    mTemp,
-                    SensorManager.SENSOR_DELAY_NORMAL);
+            enableUI();
         }
-
-        //mSensorManager.registerListener(this, mTemp);
-
-
+//        Calendar cal = Calendar.getInstance();
+//        alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        alarm.cancel(pintent);
+//        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3 * 1000, pintent);
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManager.unregisterListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        alarm.cancel(pintent);
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.remove("tempHistory");
+//        editor.commit();
+//        alarm.cancel(pintent);
     }
 
-    private void updateTemperature(double temp)
+    public void startDataCollection()
     {
-        GridLayout newGridLayout = new GridLayout(this);
-        TextView time = new TextView(this);
-        TextView txtTemp = new TextView(this);
-        long newTime = System.currentTimeMillis()-startTime;
-        time.setText(""+newTime+"    -     ");
-        txtTemp.setText("      "+temp);
-        newGridLayout.setColumnCount(2);
-        txtTemp.setTypeface(null, Typeface.BOLD);
+        int selectedId = performance.getCheckedRadioButtonId();
+        String envTemp = environmentTemperature.getText().toString();
+        if(envTemp==null||envTemp.equals("")||selectedId==-1)
+        {
+            Toast.makeText(this,"Please fill in all the information",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            //Start gathering data
+            int currentId = prefs.getInt("currentId", 0);
+            currentId++;
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("currentId", currentId);
+            editor.commit();
 
-        newGridLayout.addView(time);
-        newGridLayout.addView(txtTemp);
-        temperatureList.addView(newGridLayout);
+            RadioButton selectedPerformance = (RadioButton) findViewById(selectedId);
+            String perf = selectedPerformance.getText().toString();
+
+            Intent intent = new Intent(this, TemperatureBroadcastReceiver.class);
+            intent.putExtra("temperature", envTemp);
+            intent.putExtra("performance", perf);
+            intent.putExtra("currentId",currentId);
+
+            pintent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Calendar cal = Calendar.getInstance();
+            alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarm.cancel(pintent);
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3 * 1000, pintent);
+            editor.putBoolean("gathering-data", true);
+            disableUI();
+
+            //Create permanent notification
+
+            Intent newIntent = new Intent(this, TemperatureNotificationManager.class);
+
+            PendingIntent pintentNotification = PendingIntent.getBroadcast(this, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Notification noti = new Notification.Builder(this)
+                    .setContentTitle("Temperature Module")
+                    .setContentText("Gathering data...")
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setOngoing(true) // Again, THIS is the important line
+                    .addAction(R.mipmap.ic_launcher,"Stop", pintentNotification)
+                    .build();
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(NOTIFICATION_ID, noti);
+        }
+
     }
 
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-    public void onSensorChanged(SensorEvent event) {
-        Sensor mSensor = event.sensor;
-        float temperature[] = event.values;
-    }
 }
