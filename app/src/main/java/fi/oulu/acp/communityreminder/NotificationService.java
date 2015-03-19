@@ -1,17 +1,24 @@
 package fi.oulu.acp.communityreminder;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
-public class NotificationService extends Service{
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+public class NotificationService extends IntentService {
     private NotificationManager nm;
+    public static final int NOTIFICATION_ID = 1;
+    public static final String TAG = "Notification Service";
 
-
-
+    public NotificationService(){
+        super("NotofocationService");
+    }
     @Override
     public void onCreate(){
         super.onCreate();
@@ -30,6 +37,25 @@ public class NotificationService extends Service{
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @Override
+    protected void onHandleIntent(Intent intent){
+        Bundle extras = intent.getExtras();
+        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+        String messageType = gcm.getMessageType(intent);
+
+        if (!extras.isEmpty()){
+            if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)){
+                sendNotif(intent);
+            }
+            else if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)){
+                Toast.makeText(getApplicationContext(), "Send Error", Toast.LENGTH_SHORT).show();
+            }
+            else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED.equals(messageType)){
+                Toast.makeText(getApplicationContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
+            }
+        }
+        GcmBroadcastReceiver.completeWakefulIntent(intent);
+    }
     private void sendNotif(Intent intent){
         if (intent.getAction().equals(HomeStatusActivity.HOME_STATUS_ACTION)){
             int state = intent.getIntExtra("change", 0);
