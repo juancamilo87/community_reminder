@@ -14,41 +14,52 @@
         android:id="@+id/no_use6"
         android:weightSum="1">
 
-        <ImageView
+        <TextView
             android:layout_width="fill_parent"
             android:layout_height="60dp"
-            android:id="@+id/imageView2"
-            android:background="@mipmap/icon_cont"
+            android:background="@android:color/black"
+            android:text="ADD CONTACT"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:textSize="24sp"
             android:alpha="0.85" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#ffbebebe"
+        android:layout_height="wrap_content"
         android:gravity="center">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="320dp"
+            android:layout_height="80dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Choose Available Contacts"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:background="#b83baf4a"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:alpha="0.7"
             android:id="@+id/textView4" />
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/secondlayout">
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp">
 
         <ListView
-            android:layout_width="match_parent"
+            android:layout_width="320dp"
             android:layout_height="match_parent"
             android:id="@+id/phonecontacts"
-            android:divider="#34212520"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:divider="#73efffea"
             android:dividerHeight="1.3dp"
-            android:background="#fff8fbff" />
+            android:background="#b83baf4a"/>
     </RelativeLayout>
 </LinearLayout>

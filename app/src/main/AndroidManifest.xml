@@ -84,11 +84,6 @@
             android:exported="true" >
         </service>
 
-        <service
-            android:name=".ChangeContactService"
-            android:enabled="true">
-        </service>
-
         <activity
             android:name=".PedometerActivity"
             android:label="@string/title_activity_pedometer" >
@@ -112,6 +107,21 @@
         <activity
             android:name=".AddContactListActivity"
             android:label="@string/title_activity_add_contacts" >
+        </activity>
+
+        <activity
+            android:name=".ContactListActivity"
+            android:label="@string/title_activity_contacts" >
+        </activity>
+
+        <activity
+            android:name=".SignInActivity"
+            android:label="@string/title_activity_signin" >
+        </activity>
+
+        <activity
+            android:name=".HomeScreenActivity"
+            android:label="@string/title_activity_home_screen" >
         </activity>
 
         <receiver android:name=".TemperatureBroadcastReceiver" />

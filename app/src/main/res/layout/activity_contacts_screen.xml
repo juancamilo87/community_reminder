@@ -41,18 +41,36 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/secondlayout"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp">
+
+        <LinearLayout
+            android:id="@+id/linlaHeaderProgress"
+            android:layout_width="320dp"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone" >
+
+            <ProgressBar
+                android:id="@+id/pbHeaderProgress"
+                android:indeterminate="true"
+                style="@android:style/Widget.ProgressBar.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+            </ProgressBar>
+        </LinearLayout>
 
         <ListView
-            android:layout_width="match_parent"
+            android:layout_width="320dp"
             android:layout_height="match_parent"
             android:id="@+id/contactsname"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
+            android:layout_centerHorizontal="true"
             android:divider="#73efffea"
             android:dividerHeight="1.3dp"
             android:background="#b83baf4a" />

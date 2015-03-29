@@ -199,8 +199,10 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    public void goToSignUp(View view){
-        Intent intent = new Intent(this, SignupActivity.class);
+
+
+    public void goToSignIn(View view){
+        Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
 

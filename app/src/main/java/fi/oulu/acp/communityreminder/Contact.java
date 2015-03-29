@@ -13,6 +13,8 @@ public class Contact {
     private String id;
     private ArrayList<String> phones;
     private Bitmap picture;
+    private String birthday;
+    private int stepGoals;
 
 
     public Contact(String contactId, ArrayList<String> contactPhones){
@@ -65,5 +67,13 @@ public class Contact {
 
     public void setPicture(Bitmap picture) {
         this.picture = picture;
+    }
+
+    public void setBirthday(String sBirthday){
+        birthday = sBirthday;
+    }
+
+    public void setStepGoals(int sStepGoals){
+        stepGoals = sStepGoals;
     }
 }
