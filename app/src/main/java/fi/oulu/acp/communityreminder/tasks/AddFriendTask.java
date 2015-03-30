@@ -46,7 +46,7 @@ public class AddFriendTask extends AsyncTask<Object, Void, HttpResponse> {
         friend_id = (String) objects[2];
         ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("user_id", user_id));
-        nameValuePairs.add(new BasicNameValuePair("friend_id", friend_id));
+        nameValuePairs.add(new BasicNameValuePair("friend_id", friend_id.replaceAll("[^0-9+]", "")));
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
@@ -66,6 +66,7 @@ public class AddFriendTask extends AsyncTask<Object, Void, HttpResponse> {
         {
             String responseCode = headers[3].getValue();
             if(responseCode.equals("409")){
+
                 Log.e("RegisterFriend", "Unknown error");
             }
             else if(responseCode.equals("201"))
@@ -84,7 +85,7 @@ public class AddFriendTask extends AsyncTask<Object, Void, HttpResponse> {
                     contact.getPicture().compress(Bitmap.CompressFormat.PNG, 100, bos);
                     bArray = bos.toByteArray();
                 }
-                fds.addFriendsData(bArray,contact.getName(),contact.getPhones().get(0),null,0);
+                fds.addFriendsData(bArray,contact.getName(),contact.getPhones().get(0),null,0, 1);
                 fds.close();
                 Log.d("RegisterFriend","Friend added");
             }

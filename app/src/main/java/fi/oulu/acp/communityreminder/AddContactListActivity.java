@@ -52,6 +52,7 @@ public class AddContactListActivity extends Activity {
         ds.close();
         contactListAdapter = new ContactListAdapter(this, R.layout.contact_row_add, contacts);
         lv.setAdapter(contactListAdapter);
+        lv.setEmptyView(findViewById(R.id.no_contacts_txt));
 
 
     }

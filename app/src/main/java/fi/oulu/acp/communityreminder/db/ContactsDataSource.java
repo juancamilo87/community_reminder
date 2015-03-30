@@ -112,30 +112,30 @@ public class ContactsDataSource {
     public void makeFriend(String phone){
         ContentValues cv = new ContentValues();
         cv.put(MySQLiteHelper.COLUMN_CONTACTS_FRIEND,1);
-
-        database.update(MySQLiteHelper.TABLE_CONTACTS_DATA,cv,MySQLiteHelper.COLUMN_CONTACTS_PHONE + " = " + phone,null);
+        database.update(MySQLiteHelper.TABLE_CONTACTS_DATA,cv,MySQLiteHelper.COLUMN_CONTACTS_PHONE + " = '" + phone+ "'",null);
     }
 
     public Contact getContact(String phone){
         Contact contact = null;
 
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_CONTACTS_DATA,null,MySQLiteHelper.COLUMN_CONTACTS_PHONE + " = " + phone
-                ,null,null,null,null);
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_CONTACTS_DATA,null,MySQLiteHelper.COLUMN_CONTACTS_PHONE + " = '" + phone
+                + "'",null,null,null,null);
 
-        cursor.moveToFirst();
-        byte[] pictureBytes = cursor.getBlob(1);
-        Bitmap picture = null;
-        if(pictureBytes!=null)
+        if(cursor.moveToFirst())
         {
-            picture = BitmapFactory.decodeByteArray(pictureBytes, 0, pictureBytes.length);
+            byte[] pictureBytes = cursor.getBlob(1);
+            Bitmap picture = null;
+            if(pictureBytes!=null)
+            {
+                picture = BitmapFactory.decodeByteArray(pictureBytes, 0, pictureBytes.length);
+            }
+
+            String name = cursor.getString(2);
+            String thePhone = cursor.getString(3);
+            ArrayList<String> phones = new ArrayList<>();
+            phones.add(thePhone);
+            contact = new Contact("1",phones, name, picture);
         }
-
-        String name = cursor.getString(2);
-        String thePhone = cursor.getString(3);
-        ArrayList<String> phones = new ArrayList<>();
-        phones.add(thePhone);
-        contact = new Contact("1",phones, name, picture);
-
         return contact;
     }
 

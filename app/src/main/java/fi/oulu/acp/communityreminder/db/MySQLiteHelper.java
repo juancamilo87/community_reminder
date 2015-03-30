@@ -35,9 +35,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_FRIEND_PHONE = "phone";
     public static final String COLUMN_FRIEND_BIRTHDAY = "birthday";
     public static final String COLUMN_FRIEND_STEPGOAL = "step_goal";
+    public static final String COLUMN_FRIEND_STATUS = "status";
 
     private static final String DATABASE_NAME = "data.db";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_TEMP = "create table "
@@ -63,7 +64,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             + " text not null, " + COLUMN_FRIEND_PHONE
             + " text not null, " + COLUMN_FRIEND_BIRTHDAY
             + " text, " + COLUMN_FRIEND_STEPGOAL
-            + " integer);";
+            + " integer, " + COLUMN_FRIEND_STATUS
+            + " integer not null);";
 
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

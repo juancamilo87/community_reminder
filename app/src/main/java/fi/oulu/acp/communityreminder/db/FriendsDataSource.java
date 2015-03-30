@@ -25,7 +25,7 @@ public class FriendsDataSource {
     private String[] allColumns = { MySQLiteHelper.COLUMN_FRIEND_ID,
             MySQLiteHelper.COLUMN_FRIEND_BITMAP, MySQLiteHelper.COLUMN_FRIEND_NAME,
             MySQLiteHelper.COLUMN_FRIEND_PHONE, MySQLiteHelper.COLUMN_FRIEND_BIRTHDAY,
-            MySQLiteHelper.COLUMN_FRIEND_STEPGOAL};
+            MySQLiteHelper.COLUMN_FRIEND_STEPGOAL, MySQLiteHelper.COLUMN_FRIEND_STATUS};
 
     public FriendsDataSource(Context context) {
         dbHelper = new MySQLiteHelper(context);
@@ -39,13 +39,14 @@ public class FriendsDataSource {
         dbHelper.close();
     }
 
-    public int addFriendsData(byte[] image, String name, String phone, String birthday, int stepGoal) {
+    public int addFriendsData(byte[] image, String name, String phone, String birthday, int stepGoal, int status) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_FRIEND_BITMAP, image);
         values.put(MySQLiteHelper.COLUMN_FRIEND_NAME, name);
         values.put(MySQLiteHelper.COLUMN_FRIEND_PHONE, phone);
         values.put(MySQLiteHelper.COLUMN_FRIEND_BIRTHDAY, birthday);
         values.put(MySQLiteHelper.COLUMN_FRIEND_STEPGOAL, stepGoal);
+        values.put(MySQLiteHelper.COLUMN_FRIEND_STATUS, status);
         long insertId = database.insert(MySQLiteHelper.TABLE_FRIENDS_DATA, null,
                 values);
         Cursor cursor = database.query(MySQLiteHelper.TABLE_FRIENDS_DATA,
@@ -80,6 +81,7 @@ public class FriendsDataSource {
             Contact newContact = new Contact(i+"",phones,name, picture);
             newContact.setBirthday(cursor.getString(4));
             newContact.setStepGoals(cursor.getInt(5));
+            newContact.setStatus(cursor.getInt(6));
             result.add(newContact);
         }
 
@@ -90,7 +92,29 @@ public class FriendsDataSource {
     public class CustomComparator implements Comparator<Contact> {
         @Override
         public int compare(Contact o1, Contact o2) {
-            return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+            int s1 = o1.getStatus();
+            int s2 = o2.getStatus();
+            if(s1==s2){
+                return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+            }
+            else if(s1==0)
+            {
+                return 1;
+            }
+            else if(s2==0)
+            {
+                return -1;
+            }
+            else if(s1==2)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+
+
         }
     }
 

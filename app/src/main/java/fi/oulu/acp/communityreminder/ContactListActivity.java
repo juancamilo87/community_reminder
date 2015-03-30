@@ -89,8 +89,9 @@ public class ContactListActivity extends Activity {
             linearLayout.setVisibility(View.VISIBLE);
         }
 
-        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row, friends);
+        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row_add, addHeaders(friends));
         lv.setAdapter(friendListAdapter);
+        lv.setEmptyView(findViewById(R.id.no_contacts_txt));
 
         new Thread(new Runnable() {
             @Override
@@ -113,6 +114,8 @@ public class ContactListActivity extends Activity {
         private Context context;
 
         private ArrayList<String> friendsNumbers;
+        private ArrayList<String> pendingNumbers;
+        private ArrayList<String> requestNumbers;
 
         @Override
         protected HttpResponse doInBackground(Object... objects) {
@@ -164,13 +167,34 @@ public class ContactListActivity extends Activity {
                             String answer = sb.toString();
                             Log.d("Tag",answer);
                             friendsNumbers = new ArrayList<String>();
+                            pendingNumbers = new ArrayList<String>();
+                            requestNumbers = new ArrayList<String>();
                             JSONObject parentObject = new JSONObject(answer);
                             JSONArray jsonArray = parentObject.getJSONArray("result");
+                            JSONObject friends = jsonArray.getJSONObject(0);
+                            JSONObject pendingFriends = jsonArray.getJSONObject(1);
+                            JSONObject requestFriends = jsonArray.getJSONObject(2);
 
-                            if (jsonArray != null) {
-                                int len = jsonArray.length();
+                            JSONArray friendsArray = friends.getJSONArray("friends");
+                            JSONArray pendingFriendsArray = pendingFriends.getJSONArray("pending_friends");
+                            JSONArray requestFriendsArray = requestFriends.getJSONArray("request_friends");
+
+                            if (friendsArray != null) {
+                                int len = friendsArray.length();
                                 for (int i=0;i<len;i++){
-                                    friendsNumbers.add(jsonArray.get(i).toString());
+                                    friendsNumbers.add(friendsArray.get(i).toString());
+                                }
+                            }
+                            if (pendingFriendsArray!= null) {
+                                int len = pendingFriendsArray.length();
+                                for (int i=0;i<len;i++){
+                                    pendingNumbers.add(pendingFriendsArray.get(i).toString());
+                                }
+                            }
+                            if (requestFriendsArray != null) {
+                                int len = requestFriendsArray.length();
+                                for (int i=0;i<len;i++){
+                                    requestNumbers.add(requestFriendsArray.get(i).toString());
                                 }
                             }
                         }
@@ -188,8 +212,35 @@ public class ContactListActivity extends Activity {
                         {
                             if(possibleFriends.get(j).getPhones().get(0).equals(friendsNumbers.get(i)))
                             {
-                                newFriends.add(possibleFriends.get(j));
+                                Contact newContact = possibleFriends.get(j);
+                                newFriends.add(newContact);
                                 ds.makeFriend(friendsNumbers.get(i));
+                            }
+                        }
+                    }
+                    for(int i = 0; i< pendingNumbers.size(); i++)
+                    {
+                        for(int j = 0; j< possibleFriends.size(); j++)
+                        {
+                            if(possibleFriends.get(j).getPhones().get(0).equals(pendingNumbers.get(i)))
+                            {
+                                Contact newContact = possibleFriends.get(j);
+                                newContact.setPending();
+                                newFriends.add(newContact);
+                                ds.makeFriend(pendingNumbers.get(i));
+                            }
+                        }
+                    }
+                    for(int i = 0; i< requestNumbers.size(); i++)
+                    {
+                        for(int j = 0; j< possibleFriends.size(); j++)
+                        {
+                            if(possibleFriends.get(j).getPhones().get(0).equals(requestNumbers.get(i)))
+                            {
+                                Contact newContact = possibleFriends.get(j);
+                                newContact.setRequested();
+                                newFriends.add(newContact);
+                                ds.makeFriend(requestNumbers.get(i));
                             }
                         }
                     }
@@ -209,13 +260,13 @@ public class ContactListActivity extends Activity {
                         }
 
 
-                        fds.addFriendsData(bArray,friend.getName(),friend.getPhones().get(0),null,0);
+                        fds.addFriendsData(bArray,friend.getName(),friend.getPhones().get(0),null,0,friend.getStatus());
                     }
                     fds.close();
                     ds.close();
 
                     linearLayout.setVisibility(View.GONE);
-                    friendListAdapter = new FriendListAdapter(context,R.layout.contact_row,newFriends);
+                    friendListAdapter = new FriendListAdapter(context,R.layout.contact_row_add,addHeaders(newFriends));
                     lv.setAdapter(friendListAdapter);
                     Log.d("Friends","Friends loaded");
                 }
@@ -238,7 +289,7 @@ public class ContactListActivity extends Activity {
         fds.open();
         friends = fds.getAllFriends();
         fds.close();
-        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row, friends);
+        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row_add, addHeaders(friends));
         lv.setAdapter(friendListAdapter);
     }
 
@@ -265,7 +316,7 @@ public class ContactListActivity extends Activity {
                         if(phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE||phoneType== ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE)
                         {
                             String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            phones.add(contactNumber);
+                            phones.add(contactNumber.replaceAll("[^0-9+]", ""));
                         }
 
                     }
@@ -288,7 +339,29 @@ public class ContactListActivity extends Activity {
     public class CustomComparator implements Comparator<Contact> {
         @Override
         public int compare(Contact o1, Contact o2) {
-            return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+            int s1 = o1.getStatus();
+            int s2 = o2.getStatus();
+            if(s1==s2){
+                return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+            }
+            else if(s1==0)
+            {
+                return 1;
+            }
+            else if(s2==0)
+            {
+                return -1;
+            }
+            else if(s1==2)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+
+
         }
     }
 
@@ -311,6 +384,49 @@ public class ContactListActivity extends Activity {
             cursor.close();
         }
 
+    }
+
+    public ArrayList<Contact> addHeaders(ArrayList<Contact> items){
+        ArrayList<Contact> realItems = new ArrayList<>();
+        boolean request = false;
+        boolean pending = false;
+        boolean friends = false;
+        for(int i = 0; i<items.size();i++)
+        {
+            Contact thisContact = items.get(i);
+            switch (thisContact.getStatus()){
+                case 0:
+                    if(!friends)
+                    {
+                        Contact newContact = new Contact("0",new ArrayList<String>(),"Friends");
+                        newContact.setStatus(3);
+                        realItems.add(newContact);
+                        friends = true;
+                    }
+                    break;
+                case 1:
+                    if(!pending)
+                    {
+                        Contact newContact = new Contact("0",new ArrayList<String>(),"Awaiting confirmation");
+                        newContact.setStatus(3);
+                        realItems.add(newContact);
+                        pending = true;
+                    }
+                    break;
+                case 2:
+                    if(!request)
+                    {
+                        Contact newContact = new Contact("0",new ArrayList<String>(),"Requests");
+                        newContact.setStatus(3);
+                        realItems.add(newContact);
+                        request = true;
+                    }
+                    break;
+            }
+            realItems.add(thisContact);
+
+        }
+        return realItems;
     }
 
 }

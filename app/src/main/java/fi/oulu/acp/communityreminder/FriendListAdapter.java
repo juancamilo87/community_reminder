@@ -26,35 +26,49 @@ public class FriendListAdapter extends ArrayAdapter<Contact> {
 
         View v = convertView;
 
-        if (v == null) {
 
-            LayoutInflater vi;
-            vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.contact_row, null);
-
-        }
 
         Contact p = getItem(position);
 
         if (p != null) {
 
-            ImageView imageView = (ImageView) v.findViewById(R.id.contact_photo);
-            TextView nameText = (TextView) v.findViewById(R.id.contact_name);
-            TextView phoneText = (TextView) v.findViewById(R.id.contact_phone);
+            if (v == null) {
 
-
-            if (nameText != null) {
-                nameText.setText(p.getName());
-            }
-            if (phoneText != null) {
-                phoneText.setText(p.getPhones().get(0));
-            }
-            if (imageView != null) {
-                Bitmap photo = p.getPicture();
-                if(photo!=null)
-                    imageView.setImageBitmap(p.getPicture());
+                LayoutInflater vi;
+                vi = LayoutInflater.from(getContext());
+                if(p.getStatus()==3)
+                    v = vi.inflate(R.layout.contact_category, null);
+                else if(p.getStatus()==2)
+                    v = vi.inflate(R.layout.contact_row_add, null);
                 else
-                    imageView.setImageBitmap(null);
+                    v = vi.inflate(R.layout.contact_row, null);
+
+            }
+            if(p.getStatus()!=3)
+            {
+                ImageView imageView = (ImageView) v.findViewById(R.id.contact_photo);
+                TextView nameText = (TextView) v.findViewById(R.id.contact_name);
+                TextView phoneText = (TextView) v.findViewById(R.id.contact_phone);
+
+
+                if (nameText != null) {
+                    nameText.setText(p.getName());
+                }
+                if (phoneText != null) {
+                    phoneText.setText(p.getPhones().get(0));
+                }
+                if (imageView != null) {
+                    Bitmap photo = p.getPicture();
+                    if(photo!=null)
+                        imageView.setImageBitmap(p.getPicture());
+                    else
+                        imageView.setImageBitmap(null);
+                }
+            }
+            else
+            {
+                TextView sectionView = (TextView) v.findViewById(R.id.list_item_section_text);
+                sectionView.setText(p.getName());
             }
 
         }

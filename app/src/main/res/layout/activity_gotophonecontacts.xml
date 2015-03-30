@@ -61,5 +61,16 @@
             android:divider="#73efffea"
             android:dividerHeight="1.3dp"
             android:background="#b83baf4a"/>
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="#b83baf4a"
+            android:text="No contacts"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:id="@+id/no_contacts_txt"
+            android:visibility="gone"/>
     </RelativeLayout>
 </LinearLayout>
