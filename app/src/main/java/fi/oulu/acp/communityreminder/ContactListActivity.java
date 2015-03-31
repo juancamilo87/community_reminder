@@ -55,7 +55,6 @@ public class ContactListActivity extends Activity {
     };
 
     private FriendsDataSource fds;
-    private ContactsDataSource cds;
     private ListView lv;
     private ArrayList<Contact> friends;
     private FriendListAdapter friendListAdapter;
@@ -79,7 +78,6 @@ public class ContactListActivity extends Activity {
         linearLayout = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
 
         lv = (ListView) findViewById(R.id.contactsname);
-        cds = new ContactsDataSource(context);
         fds = new FriendsDataSource(context);
         fds.open();
         friends = fds.getAllFriends();
@@ -100,11 +98,9 @@ public class ContactListActivity extends Activity {
                 ArrayList<Contact> thisContacts = getAllContacts();
                 new VerifyContactsTask().execute(context, thisContacts);
 
-                cds.open();
 
                 new GetFriendsTask().execute(context);
 
-                cds.close();
             }
         }).start();
     }
@@ -427,6 +423,11 @@ public class ContactListActivity extends Activity {
 
         }
         return realItems;
+    }
+
+    public void reloadList(ArrayList<Contact> newList){
+        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row_add, addHeaders(newList));
+        lv.setAdapter(friendListAdapter);
     }
 
 }

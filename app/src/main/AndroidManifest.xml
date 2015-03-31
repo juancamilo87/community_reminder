@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <permission android:name="fi.oulu.acp.communityreminder.permission.C2D_MESSAGE"
         android:protectionLevel="signature"/>
@@ -123,6 +124,9 @@
             android:name=".HomeScreenActivity"
             android:label="@string/title_activity_home_screen" >
         </activity>
+
+        <service android:name=".services.TemperatureService"
+            android:exported="false"/>
 
         <receiver android:name=".TemperatureBroadcastReceiver" />
         <receiver android:name=".TemperatureNotificationManager" />

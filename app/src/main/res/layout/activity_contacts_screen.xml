@@ -81,7 +81,7 @@
             android:layout_centerHorizontal="true"
             android:background="#b83baf4a"
             android:text="No contacts"
-            android:textAlignment="center"
+            android:gravity="center"
             android:textSize="20sp"
             android:id="@+id/no_contacts_txt"
             android:visibility="gone"/>

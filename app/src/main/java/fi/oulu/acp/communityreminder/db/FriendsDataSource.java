@@ -89,6 +89,12 @@ public class FriendsDataSource {
         return result;
     }
 
+    public void verifyFriend(String phone){
+        ContentValues cv = new ContentValues();
+        cv.put(MySQLiteHelper.COLUMN_FRIEND_STATUS,0);
+        database.update(MySQLiteHelper.TABLE_FRIENDS_DATA,cv,MySQLiteHelper.COLUMN_FRIEND_PHONE+ " = '" + phone+ "'",null);
+    }
+
     public class CustomComparator implements Comparator<Contact> {
         @Override
         public int compare(Contact o1, Contact o2) {

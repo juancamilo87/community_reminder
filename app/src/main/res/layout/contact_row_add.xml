@@ -48,5 +48,12 @@
         android:background="@android:color/transparent"
         android:id="@+id/add_contact_btn"
         />
+    <ProgressBar
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/progress_add_contact"
+        android:layout_weight="0.5"
+        android:visibility="gone"/>
 
 </LinearLayout>
