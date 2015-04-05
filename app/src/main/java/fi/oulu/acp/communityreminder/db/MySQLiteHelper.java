@@ -37,8 +37,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_FRIEND_STEPGOAL = "step_goal";
     public static final String COLUMN_FRIEND_STATUS = "status";
 
+    public static final String TABLE_NOTIFICATIONS = "notifications";
+
+    public static final String COLUMN_NOTIFICATION_ID = "_id";
+    public static final String COLUMN_NOTIFICATION_PHONE = "phone_number";
+    public static final String COLUMN_NOTIFICATION_TITLE = "title";
+    public static final String COLUMN_NOTIFICATION_MESSAGE = "message";
+    public static final String COLUMN_NOTIFICATION_TIMESTAMP = "timestamp";
+
     private static final String DATABASE_NAME = "data.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_TEMP = "create table "
@@ -67,6 +75,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             + " integer, " + COLUMN_FRIEND_STATUS
             + " integer not null);";
 
+    public static final String DATABASE_CREATE_NOTIFICATIONS = "create table "
+            + TABLE_NOTIFICATIONS + "(" + COLUMN_NOTIFICATION_ID
+            + " integer primary key autoincrement, " + COLUMN_NOTIFICATION_PHONE
+            + " text not null, " + COLUMN_NOTIFICATION_TITLE
+            + " text not null, " + COLUMN_NOTIFICATION_MESSAGE
+            + " text not null, " + COLUMN_NOTIFICATION_TIMESTAMP
+            + " integer not null);";
+
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -76,6 +92,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         database.execSQL(DATABASE_CREATE_TEMP);
         database.execSQL(DATABASE_CREATE_CONTACTS);
         database.execSQL(DATABASE_CREATE_FRIENDS);
+        database.execSQL(DATABASE_CREATE_NOTIFICATIONS);
     }
 
     @Override
@@ -86,6 +103,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEMP_DATA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS_DATA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FRIENDS_DATA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
         onCreate(db);
     }
 
