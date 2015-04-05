@@ -101,5 +101,12 @@ public class Contact {
         return status;
     }
 
+    public String getBirthday(){
+        return birthday;
+    }
+
+    public int getStepGoals(){
+        return stepGoals;
+    }
 
 }

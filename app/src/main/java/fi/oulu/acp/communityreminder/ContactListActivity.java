@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -90,6 +91,19 @@ public class ContactListActivity extends Activity {
         friendListAdapter = new FriendListAdapter(this, R.layout.contact_row_add, addHeaders(friends));
         lv.setAdapter(friendListAdapter);
         lv.setEmptyView(findViewById(R.id.no_contacts_txt));
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(ContactListActivity.this, ContactActivity.class);
+                Contact contact = (Contact) parent.getItemAtPosition(position);
+                intent.putExtra("name",contact.getName());
+                intent.putExtra("phone",contact.getPhones().get(0));
+                intent.putExtra("birthday",contact.getBirthday());
+                intent.putExtra("stepGoal",contact.getStepGoals());
+                startActivity(intent);
+            }
+        });
 
         new Thread(new Runnable() {
             @Override

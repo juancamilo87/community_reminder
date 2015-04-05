@@ -78,6 +78,7 @@ public class FriendListAdapter extends ArrayAdapter<Contact> {
                     final ProgressBar add_progress = (ProgressBar) v.findViewById(R.id.progress_add_contact);
                     if(acceptButton!=null)
                     {
+                        acceptButton.setFocusable(false);
                         acceptButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
