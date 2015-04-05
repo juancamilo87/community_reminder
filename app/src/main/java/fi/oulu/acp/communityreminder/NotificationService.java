@@ -45,6 +45,7 @@ public class NotificationService extends IntentService {
 
         if (!extras.isEmpty()){
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)){
+                Toast.makeText(getApplicationContext(), "MESSAGE", Toast.LENGTH_SHORT).show();
                 sendNotif(intent);
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)){

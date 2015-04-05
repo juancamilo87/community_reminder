@@ -17,7 +17,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -27,10 +35,10 @@ public class MainActivity extends ActionBarActivity {
     private final static String PROPERTY_APP_VERSION = "appVersion";
     private final static String PROPERTY_REG_ID = "registration_id";
 
-    String SENDER_ID = "957322195637";
     String regid;
     SharedPreferences prefs;
     Context context;
+    AtomicInteger msgId = new AtomicInteger();
 
     GoogleCloudMessaging gcm;
 
@@ -98,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
                     if (gcm == null)
                         gcm = GoogleCloudMessaging.getInstance(context);
 
-                    regid = gcm.register(SENDER_ID);
+                    regid = gcm.register(Config.GOOGLE_SENDER_ID);
                     msg = "Device registered, registration ID =" + regid;
 
                     ServerUtilities.register(context, regid);
@@ -112,6 +120,51 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             protected void onPostExecute(String msg){
+
+            }
+        }.execute(null, null, null);
+    }
+
+    public void sendMessage(){
+        new AsyncTask<Object, Void, HttpResponse>(){
+            @Override
+            protected HttpResponse doInBackground(Object... params){
+                String msg = "";
+                try {
+                    /*Bundle data = new Bundle();
+                    data.putString("my_message", "Hello World");
+                    data.putString("my_action",
+                            "fi.oulu.acp.communityreminder.ECHO_NOW");
+                    String id = Integer.toString(msgId.incrementAndGet());
+                    gcm.send(Config.GOOGLE_SENDER_ID + "@gcm.googleapis.com", id, data);
+                    msg = "Sent message";*/
+                    String url = "http://pan0166.panoulu.net/community/backend/broadcastAlert.php";
+                    //Map<String, String> par = new HashMap<>();
+                    //par.put("regId", regid);
+                    //par.put("message", "Hey!");
+                    //ServerUtilities.post(url, par);
+                    url += "?user_id=" + "09876543210" + "&message=" + "BLA";
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpGet httpGet = new HttpGet(url);
+
+                    HttpResponse httpResponse = httpClient.execute(httpGet);
+                    return httpResponse;
+                } catch (IOException ex) {
+                    Log.e("++++++++", "BLA");
+                    return null;
+                }
+                //return msg;
+            }
+            @Override
+            protected void onPostExecute(HttpResponse msg){
+                Log.e("++++++++", msg.toString());
+                try{
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(msg.getEntity().getContent(),"UTF-8"));
+                    String fhg = bufferedReader.readLine();
+                    Log.e("--------", fhg);
+                } catch (Exception e){
+
+                }
 
             }
         }.execute(null, null, null);
@@ -197,6 +250,7 @@ public class MainActivity extends ActionBarActivity {
     public void goToPedometerActivity(View view){
         Intent intent = new Intent(this, PedometerActivity.class);
         startActivity(intent);
+        sendMessage();
     }
 
     public void goToSignUp(View view){

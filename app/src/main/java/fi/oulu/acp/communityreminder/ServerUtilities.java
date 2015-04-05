@@ -24,10 +24,10 @@ public class ServerUtilities {
     private static final int BACKOFF_MILLI_SECONDS = 2000;
     private static final Random random = new Random();
 
-    static void register(final Context context, final String regId){
+    public static void register(final Context context, final String regId){
         Log.i(TAG, "registering device (regId = " + regId + ")");
-        String serverUrl = SERVER_URL + "/register";
-        Map<String, String> params = new HashMap<String, String>();
+        String serverUrl = SERVER_URL;
+        Map<String, String> params = new HashMap<>();
         params.put("regId", regId);
         long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
         // Once GCM returns a registration id, we need to register it in the
@@ -66,7 +66,7 @@ public class ServerUtilities {
         }
     }
 
-    private static void post(String endpoint, Map<String, String> params)
+    public static void post(String endpoint, Map<String, String> params)
             throws IOException {
         URL url;
         try {

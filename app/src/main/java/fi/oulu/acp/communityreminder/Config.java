@@ -6,7 +6,7 @@ package fi.oulu.acp.communityreminder;
 public interface Config {
     // CONSTANTS
     static final String SERVER_URL =
-            "YOUR_SERVER_URL/gcm_server_files/register.php";
+            "http://pan0166.panoulu.net/community/backend/registerUser.php";
 
     // Google project id
     static final String GOOGLE_SENDER_ID = "957322195637";
