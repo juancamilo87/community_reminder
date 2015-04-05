@@ -22,15 +22,38 @@
             android:id="@+id/imageView"
             android:background="@mipmap/app_icon" />
 
-        <Button
+        <RelativeLayout
             android:layout_width="273dp"
-            android:layout_height="wrap_content"
-            android:text="Sign in with phone number"
+            android:layout_height="45dp"
             android:id="@+id/sign_in_button"
             android:layout_gravity="center_horizontal"
             android:alpha=".80"
             android:background="#ff01e86e"
-            android:textColor="#fff0fff0" />
+            >
+
+            <TextView android:id="@+id/sign_up_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Sign in with phone number"
+                android:textSize="15sp"
+                android:textColor="#fff0fff0"/>
+
+            <ProgressBar
+                android:id="@+id/sign_in_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/sign_up_text"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                style="@android:style/Widget.ProgressBar.Small"
+                android:indeterminate="true"
+                android:visibility="gone"
+                />
+
+        </RelativeLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>

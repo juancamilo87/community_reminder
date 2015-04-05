@@ -9,27 +9,28 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,73 +38,73 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 import fi.oulu.acp.communityreminder.db.ContactsDataSource;
 import fi.oulu.acp.communityreminder.db.FriendsDataSource;
+import fi.oulu.acp.communityreminder.services.TemperatureService;
 import fi.oulu.acp.communityreminder.tasks.VerifyContactsTask;
 
 /**
- * Created by JuanCamilo on 3/19/2015.
+ * Created by JuanCamilo on 3/29/2015.
  */
-public class ContactListActivity extends Activity {
+public class HomeScreenActivity extends Activity {
 
     private static final String[] PHOTO_BITMAP_PROJECTION = new String[] {
             ContactsContract.CommonDataKinds.Photo.PHOTO
     };
 
-    private FriendsDataSource fds;
-    private ListView lv;
-    private ArrayList<Contact> friends;
-    private FriendListAdapter friendListAdapter;
+
     private Context context;
-    private ImageButton addContactBtn;
-    private LinearLayout linearLayout;
+    private ImageButton btnEmergency;
+    private int emergencyTaps;
+    private Toast toast;
+    private ImageButton btnProblem;
+    private int problemTaps;
+    private GoogleApiClient mGoogleApiClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contacts_screen);
+        setContentView(R.layout.activity_home_screen);
         context = this;
-        addContactBtn = (ImageButton) findViewById(R.id.addcontacts);
-        addContactBtn.setOnClickListener(new View.OnClickListener() {
+        toast = Toast.makeText(getApplicationContext(), "Start", Toast.LENGTH_SHORT);
+        //Contacts
+        ImageButton contactsBtn = (ImageButton) findViewById(R.id.ContactsButton);
+        contactsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,AddContactListActivity.class);
+                Intent intent = new Intent(context, ContactListActivity.class);
                 startActivity(intent);
             }
         });
-        linearLayout = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
 
-        lv = (ListView) findViewById(R.id.contactsname);
-        fds = new FriendsDataSource(context);
-        fds.open();
-        friends = fds.getAllFriends();
-        fds.close();
-        if(friends.size()==0)
-        {
-            linearLayout.setVisibility(View.VISIBLE);
-        }
+        //Emergency buttons
+        //First
+        initializeEmergencyButton();
+        initializeProblemButton();
+        initializeContacts();
+        initializeTempAlerts();
 
-        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row_add, addHeaders(friends));
-        lv.setAdapter(friendListAdapter);
-        lv.setEmptyView(findViewById(R.id.no_contacts_txt));
+        //Second
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ContactListActivity.this, ContactActivity.class);
-                Contact contact = (Contact) parent.getItemAtPosition(position);
-                intent.putExtra("name",contact.getName());
-                intent.putExtra("phone",contact.getPhones().get(0));
-                intent.putExtra("birthday",contact.getBirthday());
-                intent.putExtra("stepGoal",contact.getStepGoals());
-                startActivity(intent);
-            }
-        });
+    }
+
+    private void initializeTempAlerts() {
+        Intent intent = new Intent(this, TemperatureService.class);
+        startService(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    private void initializeContacts() {
 
         new Thread(new Runnable() {
             @Override
@@ -111,12 +112,212 @@ public class ContactListActivity extends Activity {
 
                 ArrayList<Contact> thisContacts = getAllContacts();
                 new VerifyContactsTask().execute(context, thisContacts);
-
-
                 new GetFriendsTask().execute(context);
-
             }
         }).start();
+
+    }
+
+    private void initializeProblemButton() {
+        problemTaps = 0;
+        final Handler handler = new Handler();
+
+        final Runnable restartTapCount = new Runnable() {
+            @Override
+            public void run() {
+                problemTaps = 0;
+                Log.d("DEBUG", "problemTap resetted");
+            }
+        };
+
+        final int millisecondsPerTap = (getResources().getInteger(R.integer.seconds_for_emergency)*1000)/getResources().getInteger(R.integer.taps_for_emergency);
+        Log.d("DEBUG", "time between: "+millisecondsPerTap);
+        final int tapsForEmergency = getResources().getInteger(R.integer.taps_for_emergency);
+
+
+        btnProblem = (ImageButton) findViewById(R.id.LifeProblemButton);
+
+        btnProblem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.removeCallbacks(restartTapCount);
+                problemTaps++;
+                if (problemTaps == tapsForEmergency) {
+                    toast.cancel();
+                    Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
+                    problemTaps = 0;
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                    vibrator.vibrate(600);
+
+                } else {
+                    toast.setText("Tap " + (tapsForEmergency - problemTaps) + " more times to send life problem alert.");
+                    toast.show();
+                    handler.postDelayed(restartTapCount, millisecondsPerTap);
+                }
+            }
+        });
+
+        btnProblem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                toast.setText("Tap " + tapsForEmergency + " times to send a life problem alert!");
+                toast.show();
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                vibrator.vibrate(300);
+                return true;
+            }
+        });
+    }
+
+    private void initializeEmergencyButton() {
+        emergencyTaps = 0;
+        final Handler handler = new Handler();
+
+        final Runnable restartTapCount = new Runnable() {
+            @Override
+            public void run() {
+                emergencyTaps = 0;
+                Log.d("DEBUG", "emergencyTap resetted");
+            }
+        };
+
+        final int millisecondsPerTap = (getResources().getInteger(R.integer.seconds_for_emergency)*1000)/getResources().getInteger(R.integer.taps_for_emergency);
+        Log.d("DEBUG", "time between: "+millisecondsPerTap);
+        final int tapsForEmergency = getResources().getInteger(R.integer.taps_for_emergency);
+
+
+        btnEmergency = (ImageButton) findViewById(R.id.HealthEmergencyButton);
+
+        btnEmergency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.removeCallbacks(restartTapCount);
+                emergencyTaps++;
+                if(emergencyTaps==tapsForEmergency)
+                {
+                    toast.cancel();
+                    Toast.makeText(getApplicationContext(),"Emergency alert sent!",Toast.LENGTH_SHORT).show();
+                    emergencyTaps = 0;
+                    Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+
+                    vibrator.vibrate(600);
+
+                }
+                else
+                {
+                    toast.setText("Tap " + (tapsForEmergency-emergencyTaps) + " more times to send an alert.");
+                    toast.show();
+                    handler.postDelayed(restartTapCount, millisecondsPerTap);
+                }
+            }
+        });
+
+        btnEmergency.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                toast.setText("Tap " + tapsForEmergency + " times to send an emergency alert!");
+                toast.show();
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                vibrator.vibrate(300);
+                return true;
+            }
+        });
+    }
+
+    public ArrayList<Contact> getAllContacts() {
+        ArrayList<Contact> result = new ArrayList<>();
+        ContentResolver cr = this.getContentResolver(); //Activity/Application android.content.Context
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                Integer bitmapId = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
+                Bitmap photo = fetchThumbnail(bitmapId);
+                ArrayList<String> phones = new ArrayList<>();
+
+                if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
+                {
+                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
+                    while (pCur.moveToNext())
+                    {
+                        int phoneType = pCur.getInt(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                        if(phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE||phoneType== ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE)
+                        {
+                            String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            phones.add(contactNumber.replaceAll("[^0-9+]", ""));
+                        }
+
+                    }
+                    pCur.close();
+                }
+
+                if(phones.size()>0)
+                {
+                    Contact currentContact = new Contact(id, phones, name, photo);
+                    result.add(currentContact);
+                }
+
+            } while (cursor.moveToNext()) ;
+        }
+        cursor.close();
+        Collections.sort(result, new CustomComparator());
+        return result;
+    }
+
+    public class CustomComparator implements Comparator<Contact> {
+        @Override
+        public int compare(Contact o1, Contact o2) {
+            int s1 = o1.getStatus();
+            int s2 = o2.getStatus();
+            if(s1==s2){
+                return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+            }
+            else if(s1==0)
+            {
+                return 1;
+            }
+            else if(s2==0)
+            {
+                return -1;
+            }
+            else if(s1==2)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+
+
+        }
+    }
+
+    final Bitmap fetchThumbnail(final int thumbnailId) {
+
+        final Uri uri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, thumbnailId);
+        final Cursor cursor = this.getContentResolver().query(uri, PHOTO_BITMAP_PROJECTION, null, null, null);
+
+        try {
+            Bitmap thumbnail = null;
+            if (cursor.moveToFirst()) {
+                final byte[] thumbnailBytes = cursor.getBlob(0);
+                if (thumbnailBytes != null) {
+                    thumbnail = BitmapFactory.decodeByteArray(thumbnailBytes, 0, thumbnailBytes.length);
+                }
+            }
+            return thumbnail;
+        }
+        finally {
+            cursor.close();
+        }
+
     }
 
     private class GetFriendsTask extends AsyncTask<Object, Void, HttpResponse>
@@ -274,10 +475,6 @@ public class ContactListActivity extends Activity {
                     }
                     fds.close();
                     ds.close();
-
-                    linearLayout.setVisibility(View.GONE);
-                    friendListAdapter = new FriendListAdapter(context,R.layout.contact_row_add,addHeaders(newFriends));
-                    lv.setAdapter(friendListAdapter);
                     Log.d("Friends","Friends loaded");
                 }
                 else
@@ -290,158 +487,6 @@ public class ContactListActivity extends Activity {
                 Log.e("Friends","Unknown error");
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        fds = new FriendsDataSource(context);
-        fds.open();
-        friends = fds.getAllFriends();
-        fds.close();
-        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row_add, addHeaders(friends));
-        lv.setAdapter(friendListAdapter);
-    }
-
-    public ArrayList<Contact> getAllContacts() {
-        ArrayList<Contact> result = new ArrayList<>();
-        ContentResolver cr = this.getContentResolver(); //Activity/Application android.content.Context
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
-        if(cursor.moveToFirst())
-        {
-            do
-            {
-                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                Integer bitmapId = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
-                Bitmap photo = fetchThumbnail(bitmapId);
-                ArrayList<String> phones = new ArrayList<>();
-
-                if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
-                {
-                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
-                    while (pCur.moveToNext())
-                    {
-                        int phoneType = pCur.getInt(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                        if(phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE||phoneType== ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE)
-                        {
-                            String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            phones.add(contactNumber.replaceAll("[^0-9+]", ""));
-                        }
-
-                    }
-                    pCur.close();
-                }
-
-                if(phones.size()>0)
-                {
-                    Contact currentContact = new Contact(id, phones, name, photo);
-                    result.add(currentContact);
-                }
-
-            } while (cursor.moveToNext()) ;
-        }
-        cursor.close();
-        Collections.sort(result, new CustomComparator());
-        return result;
-    }
-
-    public class CustomComparator implements Comparator<Contact> {
-        @Override
-        public int compare(Contact o1, Contact o2) {
-            int s1 = o1.getStatus();
-            int s2 = o2.getStatus();
-            if(s1==s2){
-                return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
-            }
-            else if(s1==0)
-            {
-                return 1;
-            }
-            else if(s2==0)
-            {
-                return -1;
-            }
-            else if(s1==2)
-            {
-                return -1;
-            }
-            else
-            {
-                return 1;
-            }
-
-
-        }
-    }
-
-    final Bitmap fetchThumbnail(final int thumbnailId) {
-
-        final Uri uri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, thumbnailId);
-        final Cursor cursor = this.getContentResolver().query(uri, PHOTO_BITMAP_PROJECTION, null, null, null);
-
-        try {
-            Bitmap thumbnail = null;
-            if (cursor.moveToFirst()) {
-                final byte[] thumbnailBytes = cursor.getBlob(0);
-                if (thumbnailBytes != null) {
-                    thumbnail = BitmapFactory.decodeByteArray(thumbnailBytes, 0, thumbnailBytes.length);
-                }
-            }
-            return thumbnail;
-        }
-        finally {
-            cursor.close();
-        }
-
-    }
-
-    public ArrayList<Contact> addHeaders(ArrayList<Contact> items){
-        ArrayList<Contact> realItems = new ArrayList<>();
-        boolean request = false;
-        boolean pending = false;
-        boolean friends = false;
-        for(int i = 0; i<items.size();i++)
-        {
-            Contact thisContact = items.get(i);
-            switch (thisContact.getStatus()){
-                case 0:
-                    if(!friends)
-                    {
-                        Contact newContact = new Contact("0",new ArrayList<String>(),"Friends");
-                        newContact.setStatus(3);
-                        realItems.add(newContact);
-                        friends = true;
-                    }
-                    break;
-                case 1:
-                    if(!pending)
-                    {
-                        Contact newContact = new Contact("0",new ArrayList<String>(),"Awaiting confirmation");
-                        newContact.setStatus(3);
-                        realItems.add(newContact);
-                        pending = true;
-                    }
-                    break;
-                case 2:
-                    if(!request)
-                    {
-                        Contact newContact = new Contact("0",new ArrayList<String>(),"Requests");
-                        newContact.setStatus(3);
-                        realItems.add(newContact);
-                        request = true;
-                    }
-                    break;
-            }
-            realItems.add(thisContact);
-
-        }
-        return realItems;
-    }
-
-    public void reloadList(ArrayList<Contact> newList){
-        friendListAdapter = new FriendListAdapter(this, R.layout.contact_row_add, addHeaders(newList));
-        lv.setAdapter(friendListAdapter);
     }
 
 }

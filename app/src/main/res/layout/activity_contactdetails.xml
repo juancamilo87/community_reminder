@@ -74,6 +74,20 @@
             android:layout_marginBottom="20dp"
             android:textColor="#ffffff" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Set Temperature limits"
+            android:id="@+id/btn_temp_limits"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/transparent"
+            android:textColor="#ffffff"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            />
+
     </LinearLayout>
 
     <RelativeLayout

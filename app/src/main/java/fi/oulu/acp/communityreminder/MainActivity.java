@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
             regid = getRegistrationId(context);
 
             if (regid.isEmpty()) {
-                registerInBackground();
+                //registerInBackground();
             }
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
@@ -187,7 +187,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        checkPlayServices();
+        //checkPlayServices();
     }
 
     private boolean checkPlayServices() {
@@ -230,12 +230,6 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void goToEmergencyButton(View view)
-    {
-        Intent intent = new Intent(this, EmergencyButton.class);
-        startActivity(intent);
-    }
-
     public void goToTemperature(View view)
     {
         Intent intent = new Intent(this, TemperatureActivity.class);
@@ -253,13 +247,8 @@ public class MainActivity extends ActionBarActivity {
         sendMessage();
     }
 
-    public void goToSignUp(View view){
-        Intent intent = new Intent(this, SignupActivity.class);
-        startActivity(intent);
-    }
-
-    public void goToContactList(View view){
-        Intent intent = new Intent(this, AddContactListActivity.class);
+    public void goToSignIn(View view){
+        Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
 }

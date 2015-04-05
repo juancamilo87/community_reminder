@@ -13,6 +13,16 @@ public class Contact {
     private String id;
     private ArrayList<String> phones;
     private Bitmap picture;
+    private String birthday;
+    private int stepGoals;
+    /**
+     * Identifies the status of the contact
+     * status = 0: friend
+     * status = 1: pending
+     * status = 2: request
+     * status = 3: section
+     */
+    private int status = 0;
 
 
     public Contact(String contactId, ArrayList<String> contactPhones){
@@ -66,4 +76,37 @@ public class Contact {
     public void setPicture(Bitmap picture) {
         this.picture = picture;
     }
+
+    public void setBirthday(String sBirthday){
+        birthday = sBirthday;
+    }
+
+    public void setStepGoals(int sStepGoals){
+        stepGoals = sStepGoals;
+    }
+
+    public void setPending(){
+        status = 1;
+    }
+
+    public void setRequested(){
+        status = 2;
+    }
+
+    public void setStatus(int sStatus){
+        status = sStatus;
+    }
+
+    public int getStatus(){
+        return status;
+    }
+
+    public String getBirthday(){
+        return birthday;
+    }
+
+    public int getStepGoals(){
+        return stepGoals;
+    }
+
 }
