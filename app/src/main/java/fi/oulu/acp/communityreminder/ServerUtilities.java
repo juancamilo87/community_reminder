@@ -1,9 +1,17 @@
 package fi.oulu.acp.communityreminder;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -111,5 +119,50 @@ public class ServerUtilities {
                 conn.disconnect();
             }
         }
+    }
+    public static void sendMessage(final String uid, final String title, final String message){
+        new AsyncTask<Object, Void, HttpResponse>(){
+            @Override
+            protected HttpResponse doInBackground(Object... params){
+                String msg = "";
+                try {
+                    /*Bundle data = new Bundle();
+                    data.putString("my_message", "Hello World");
+                    data.putString("my_action",
+                            "fi.oulu.acp.communityreminder.ECHO_NOW");
+                    String id = Integer.toString(msgId.incrementAndGet());
+                    gcm.send(Config.GOOGLE_SENDER_ID + "@gcm.googleapis.com", id, data);
+                    msg = "Sent message";*/
+                    String url = "http://pan0166.panoulu.net/community/backend/broadcastAlert.php";
+                    //Map<String, String> par = new HashMap<>();
+                    //par.put("regId", regid);
+                    //par.put("message", "Hey!");
+                    //ServerUtilities.post(url, par);
+
+                    url += "?user_id=" + uid + "&message=" + message + "&title=" + title;
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpGet httpGet = new HttpGet(url);
+
+                    HttpResponse httpResponse = httpClient.execute(httpGet);
+                    return httpResponse;
+                } catch (IOException ex) {
+                    Log.e("++++++++", "BLA");
+                    return null;
+                }
+                //return msg;
+            }
+            @Override
+            protected void onPostExecute(HttpResponse msg){
+                Log.e("++++++++", msg.toString());
+                try{
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(msg.getEntity().getContent(),"UTF-8"));
+                    String fhg = bufferedReader.readLine();
+                    Log.e("--------", fhg);
+                } catch (Exception e){
+
+                }
+
+            }
+        }.execute(null, null, null);
     }
 }
