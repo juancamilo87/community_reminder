@@ -73,7 +73,8 @@
             android:layout_centerHorizontal="true"
             android:divider="#73efffea"
             android:dividerHeight="1.3dp"
-            android:background="#b83baf4a" />
+            android:background="#b83baf4a"
+            android:textFilterEnabled="true" />
         <TextView
             android:layout_width="320dp"
             android:layout_height="wrap_content"

@@ -38,14 +38,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/listView"
-            android:divider="#44e6fde9"
+            android:divider="#719effb6"
             android:dividerHeight="1.5dp"
             android:layout_gravity="center_horizontal"
             android:textFilterEnabled="true"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:clickable="true"
-            android:drawSelectorOnTop="false" />
+            android:drawSelectorOnTop="false"
+            android:background="#3ffdfff8" />
     </LinearLayout>
 
 </LinearLayout>

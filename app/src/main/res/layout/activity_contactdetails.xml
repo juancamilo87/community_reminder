@@ -27,7 +27,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ff51af61"
+        android:background="#b93baf4a"
         android:id="@+id/firstlayout"
         android:gravity="center">
 
