@@ -13,6 +13,7 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <permission android:name="fi.oulu.acp.communityreminder.permission.C2D_MESSAGE"
         android:protectionLevel="signature"/>
@@ -124,6 +125,11 @@
         <activity
             android:name=".HomeScreenActivity"
             android:label="@string/title_activity_home_screen" >
+        </activity>
+
+        <activity
+            android:name=".ContactActivity"
+            android:label="@string/title_activity_contact" >
         </activity>
 
         <service android:name=".services.TemperatureService"

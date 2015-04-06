@@ -123,9 +123,9 @@ public class ContactListActivity extends Activity {
     {
         private Context context;
 
-        private ArrayList<String> friendsNumbers;
-        private ArrayList<String> pendingNumbers;
-        private ArrayList<String> requestNumbers;
+        private ArrayList<ArrayList<String>> friendsNumbers;
+        private ArrayList<ArrayList<String>> pendingNumbers;
+        private ArrayList<ArrayList<String>> requestNumbers;
 
         @Override
         protected HttpResponse doInBackground(Object... objects) {
@@ -176,9 +176,9 @@ public class ContactListActivity extends Activity {
                             ips.close();
                             String answer = sb.toString();
                             Log.d("Tag",answer);
-                            friendsNumbers = new ArrayList<String>();
-                            pendingNumbers = new ArrayList<String>();
-                            requestNumbers = new ArrayList<String>();
+                            friendsNumbers = new ArrayList<ArrayList<String>>();
+                            pendingNumbers = new ArrayList<ArrayList<String>>();
+                            requestNumbers = new ArrayList<ArrayList<String>>();
                             JSONObject parentObject = new JSONObject(answer);
                             JSONArray jsonArray = parentObject.getJSONArray("result");
                             JSONObject friends = jsonArray.getJSONObject(0);
@@ -192,19 +192,43 @@ public class ContactListActivity extends Activity {
                             if (friendsArray != null) {
                                 int len = friendsArray.length();
                                 for (int i=0;i<len;i++){
-                                    friendsNumbers.add(friendsArray.get(i).toString());
+                                    JSONObject theFriend = friendsArray.getJSONObject(i);
+                                    String friendPhone = theFriend.getString("phone");
+                                    String friendBirthday = theFriend.getString("birthday");
+                                    String friendSteps = theFriend.getString("steps");
+                                    ArrayList<String> data = new ArrayList<>();
+                                    data.add(friendPhone);
+                                    data.add(friendBirthday);
+                                    data.add(friendSteps);
+                                    friendsNumbers.add(data);
                                 }
                             }
                             if (pendingFriendsArray!= null) {
                                 int len = pendingFriendsArray.length();
                                 for (int i=0;i<len;i++){
-                                    pendingNumbers.add(pendingFriendsArray.get(i).toString());
+                                    JSONObject theFriend = pendingFriendsArray.getJSONObject(i);
+                                    String friendPhone = theFriend.getString("phone");
+                                    String friendBirthday = theFriend.getString("birthday");
+                                    String friendSteps = theFriend.getString("steps");
+                                    ArrayList<String> data = new ArrayList<>();
+                                    data.add(friendPhone);
+                                    data.add(friendBirthday);
+                                    data.add(friendSteps);
+                                    pendingNumbers.add(data);
                                 }
                             }
                             if (requestFriendsArray != null) {
                                 int len = requestFriendsArray.length();
                                 for (int i=0;i<len;i++){
-                                    requestNumbers.add(requestFriendsArray.get(i).toString());
+                                    JSONObject theFriend = requestFriendsArray.getJSONObject(i);
+                                    String friendPhone = theFriend.getString("phone");
+                                    String friendBirthday = theFriend.getString("birthday");
+                                    String friendSteps = theFriend.getString("steps");
+                                    ArrayList<String> data = new ArrayList<>();
+                                    data.add(friendPhone);
+                                    data.add(friendBirthday);
+                                    data.add(friendSteps);
+                                    requestNumbers.add(data);
                                 }
                             }
                         }
@@ -220,11 +244,15 @@ public class ContactListActivity extends Activity {
                     {
                         for(int j = 0; j< possibleFriends.size(); j++)
                         {
-                            if(possibleFriends.get(j).getPhones().get(0).equals(friendsNumbers.get(i)))
+                            if(possibleFriends.get(j).getPhones().get(0).equals(friendsNumbers.get(i).get(0)))
                             {
                                 Contact newContact = possibleFriends.get(j);
+                                try{
+                                    newContact.setBirthday(friendsNumbers.get(i).get(1));
+                                    newContact.setStepGoals(Integer.parseInt(friendsNumbers.get(i).get(2)));
+                                }catch(Exception e){}
                                 newFriends.add(newContact);
-                                ds.makeFriend(friendsNumbers.get(i));
+                                ds.makeFriend(friendsNumbers.get(i).get(0));
                             }
                         }
                     }
@@ -232,12 +260,16 @@ public class ContactListActivity extends Activity {
                     {
                         for(int j = 0; j< possibleFriends.size(); j++)
                         {
-                            if(possibleFriends.get(j).getPhones().get(0).equals(pendingNumbers.get(i)))
+                            if(possibleFriends.get(j).getPhones().get(0).equals(pendingNumbers.get(i).get(0)))
                             {
                                 Contact newContact = possibleFriends.get(j);
+                                try{
+                                    newContact.setBirthday(pendingNumbers.get(i).get(1));
+                                    newContact.setStepGoals(Integer.parseInt(pendingNumbers.get(i).get(2)));
+                                }catch(Exception e){}
                                 newContact.setPending();
                                 newFriends.add(newContact);
-                                ds.makeFriend(pendingNumbers.get(i));
+                                ds.makeFriend(pendingNumbers.get(i).get(0));
                             }
                         }
                     }
@@ -245,12 +277,16 @@ public class ContactListActivity extends Activity {
                     {
                         for(int j = 0; j< possibleFriends.size(); j++)
                         {
-                            if(possibleFriends.get(j).getPhones().get(0).equals(requestNumbers.get(i)))
+                            if(possibleFriends.get(j).getPhones().get(0).equals(requestNumbers.get(i).get(0)))
                             {
                                 Contact newContact = possibleFriends.get(j);
+                                try{
+                                    newContact.setBirthday(requestNumbers.get(i).get(1));
+                                    newContact.setStepGoals(Integer.parseInt(requestNumbers.get(i).get(2)));
+                                }catch(Exception e){}
                                 newContact.setRequested();
                                 newFriends.add(newContact);
-                                ds.makeFriend(requestNumbers.get(i));
+                                ds.makeFriend(requestNumbers.get(i).get(0));
                             }
                         }
                     }
@@ -270,7 +306,7 @@ public class ContactListActivity extends Activity {
                         }
 
 
-                        fds.addFriendsData(bArray,friend.getName(),friend.getPhones().get(0),null,0,friend.getStatus());
+                        fds.addFriendsData(bArray,friend.getName(),friend.getPhones().get(0),friend.getBirthday(),friend.getStepGoals(),friend.getStatus());
                     }
                     fds.close();
                     ds.close();

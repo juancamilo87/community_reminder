@@ -1,6 +1,9 @@
 package fi.oulu.acp.communityreminder;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -9,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,11 +35,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -47,9 +58,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
@@ -59,10 +72,16 @@ import fi.oulu.acp.communityreminder.tasks.VerifyContactsTask;
 
 public class SignupActivity extends Activity {
 
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private final static String PROPERTY_APP_VERSION = "appVersion";
+    private final static String PROPERTY_REG_ID = "registration_id";
+    static final String TAG = "MainActivity";
+
     private String uid;
     private BroadcastReceiver smsReceiver;
     private String finalPhoneNumber;
     private String name;
+    private String birthday;
     private TextWatcher textWatcher;
     private String secretMessage;
     private boolean smsReceived;
@@ -72,10 +91,22 @@ public class SignupActivity extends Activity {
     private EditText edTName;
     private EditText edTPhone;
     private RelativeLayout verifyPhone;
+    private GoogleCloudMessaging gcm;
+    private EditText edTBirthday;
+
+    private String regid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            regid = getRegistrationId(this);
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
+
         setContentView(R.layout.activity_verify_screen);
         sContext = this;
         verifyPhone = (RelativeLayout) findViewById(R.id.verify_button);
@@ -84,6 +115,7 @@ public class SignupActivity extends Activity {
         edTName = (EditText) findViewById(R.id.editName);
         edTPhone = (EditText) findViewById(R.id.editPhoneNumber);
         smsReceived = false;
+        birthday = "";
         verifyPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +128,24 @@ public class SignupActivity extends Activity {
             ((EditText) findViewById(R.id.editPhoneNumber)).setText(mPhoneNumber);
         }
         uid = manager.getDeviceId();
+
+        ImageButton btnBirth = (ImageButton) findViewById(R.id.btn_edit_birthday);
+        edTBirthday = (EditText) findViewById(R.id.editBirthday);
+
+        btnBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("birthday",birthday);
+                DialogDatePicker dialogDatePicker = new DialogDatePicker();
+                if(!birthday.equals(""))
+                {
+                    dialogDatePicker.setArguments(bundle);
+                }
+                dialogDatePicker.setClass((SignupActivity) sContext);
+                dialogDatePicker.show(getFragmentManager(),"birthdayPicker");
+            }
+        });
 
 
     }
@@ -279,8 +329,20 @@ public class SignupActivity extends Activity {
             nameValuePairs.add(new BasicNameValuePair("name", name));
             nameValuePairs.add(new BasicNameValuePair("uid", uid));
             nameValuePairs.add(new BasicNameValuePair("phoneNumber", finalPhoneNumber));
+            nameValuePairs.add(new BasicNameValuePair("birthday", birthday));
+
             //http post
             try{
+                if (gcm == null)
+                    gcm = GoogleCloudMessaging.getInstance(context);
+
+                regid = gcm.register(Config.GOOGLE_SENDER_ID);
+                nameValuePairs.add(new BasicNameValuePair("reg_id", regid));
+                Log.d("++++","Device registered, registration ID =" + regid);
+
+                storeRegistrationId(context, regid);
+
+
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/registerUser.php");
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -372,4 +434,71 @@ public class SignupActivity extends Activity {
             }
         }
     }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private void storeRegistrationId(Context context, String regId){
+        final SharedPreferences prefs = getGCMPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_REG_ID, regId);
+        editor.putInt(PROPERTY_APP_VERSION, appVersion);
+        editor.commit();
+    }
+
+    private static int getAppVersion(Context context){
+        try{
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e){
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    private SharedPreferences getGCMPreferences(Context context){
+        return getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+    }
+
+    private String getRegistrationId(Context context){
+        final SharedPreferences prefs = getGCMPreferences(context);
+        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+
+        if (registrationId.isEmpty()){
+            Log.i(TAG, "Registration not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing registration ID is not guaranteed to work with
+        // the new app version.
+        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+
+        if (registeredVersion != currentVersion){
+            Log.i(TAG, "App version changed.");
+            return "";
+        }
+
+        return registrationId;
+    }
+
+    public void updateBirthday(int year, int month, int day){
+        birthday = year+"-"+month+"-"+day;
+        edTBirthday.setText(birthday);
+    }
+
+
 }

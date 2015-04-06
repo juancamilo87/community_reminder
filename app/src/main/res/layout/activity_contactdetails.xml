@@ -27,7 +27,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ff51af61"
+        android:background="#b93baf4a"
         android:id="@+id/firstlayout"
         android:gravity="center">
 
@@ -42,37 +42,100 @@
             android:textStyle="bold"
             android:textColor="#ffffff"
             android:layout_marginBottom="10dp" />
+    <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Phone Number"
-            android:id="@+id/GetPhoneNumber"
-            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:textColor="#ffffff" />
+            android:gravity="left"
+            android:id="@+id/ll_call"
+            android:layout_marginBottom="5dp">
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitCenter"
+                android:layout_marginRight="15dp"
+
+                android:src="@drawable/telephone"
+                android:tint="@android:color/white"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center_vertical"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Phone Number"
+                android:id="@+id/GetPhoneNumber"
+                android:layout_gravity="center_vertical"
+                android:textColor="#ffffff" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="left"
+            android:id="@+id/ll_birth"
+            android:layout_marginBottom="5dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitCenter"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/birthda"
+                android:tint="@android:color/white"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center_vertical"
+                />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Birthday"
             android:id="@+id/GetBirthday"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
-            android:textColor="#ffffff" />
+            android:layout_gravity="center_vertical"
 
+            android:textColor="#ffffff" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="left"
+            android:id="@+id/ll_steps"
+            android:layout_marginBottom="20dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitCenter"
+                android:layout_marginRight="15dp"
+                android:tint="@android:color/white"
+                android:src="@drawable/steps"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center_vertical"
+
+                />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Steps Goal"
             android:id="@+id/GetStepsGoal"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_vertical"
             android:textColor="#ffffff" />
+        </LinearLayout>
+</LinearLayout>
 
         <Button
             android:layout_width="wrap_content"
@@ -82,7 +145,7 @@
             android:id="@+id/btn_temp_limits"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="20dp"
-            android:background="@android:color/transparent"
+            android:background="@drawable/background_btn"
             android:textColor="#ffffff"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
