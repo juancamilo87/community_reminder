@@ -37,7 +37,7 @@
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/lstViewNotif"
+            android:id="@+id/listView"
             android:divider="#44e6fde9"
             android:dividerHeight="1.5dp"
             android:layout_gravity="center_horizontal"

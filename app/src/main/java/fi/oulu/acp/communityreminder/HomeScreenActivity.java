@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.apache.http.Header;
@@ -61,7 +59,7 @@ public class HomeScreenActivity extends Activity {
             ContactsContract.CommonDataKinds.Photo.PHOTO
     };
 
-
+    private static final int STEP_MSG = 1;
     private Context context;
     private ImageButton btnEmergency;
     private int emergencyTaps;
@@ -69,6 +67,7 @@ public class HomeScreenActivity extends Activity {
     private ImageButton btnProblem;
     private int problemTaps;
     private GoogleApiClient mGoogleApiClient;
+    private StepService stepService;
 
 
     @Override
@@ -95,10 +94,70 @@ public class HomeScreenActivity extends Activity {
         initializeTempAlerts();
         initializeSettings();
         resetStepsEveryDay();
+        initializePedometer();
+        initializeNotification();
 
         //Second
 
     }
+
+    private void initializeNotification(){
+        ImageButton notButton = (ImageButton) findViewById(R.id.NotificationButton);
+        notButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, NotificationActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initializePedometer(){
+        ImageButton pedButton = (ImageButton) findViewById(R.id.PedometerButton);
+        pedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PedometerActivity.class);
+                startActivity(intent);
+            }
+        });
+        startService(new Intent(this, StepService.class));
+        /*bindService(new Intent(HomeScreenActivity.this,
+                StepService.class), sConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);*/
+    }
+
+    /*private ServiceConnection sConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            stepService = ((StepService.StepBinder)service).getService();
+            stepService.registerCallBack(callBack);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            stepService = null;
+        }
+    };
+
+    private StepService.ICallBack callBack = new StepService.ICallBack() {
+        @Override
+        public void stepChanged(int value) {
+            handler.sendMessage(handler.obtainMessage(STEP_MSG, value, 0));
+        }
+    };
+
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case STEP_MSG:
+                    steps = msg.arg1;
+                    stepsBar.setProgress(steps);
+                    //stepValues.setText("" + steps);
+                    break;
+                default: super.handleMessage(msg);
+            }
+        }
+    };*/
 
     private void resetStepsEveryDay(){
         Calendar updateTime = Calendar.getInstance();
@@ -178,7 +237,7 @@ public class HomeScreenActivity extends Activity {
                     toast.cancel();
                     Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "Life Problem","I have some difficult problems to solve, please help me as soon as possible!");
+                    ServerUtilities.sendMessage(uid, "LifeProblem!","Iamintrouble!");
                     problemTaps = 0;
                     Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -234,7 +293,7 @@ public class HomeScreenActivity extends Activity {
                     toast.cancel();
                     Toast.makeText(getApplicationContext(),"Emergency alert sent!",Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "Health Problem","My life is in danger and I need to see a doctor right now!");
+                    ServerUtilities.sendMessage(uid, "Emergency!","Iamintrouble!");
                     emergencyTaps = 0;
                     Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 

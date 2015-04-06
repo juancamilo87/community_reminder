@@ -45,20 +45,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Steps Here"
+
                 android:id="@+id/getsteps"
                 android:textSize="45dp"
                 android:layout_below="@+id/textView"
                 android:layout_toRightOf="@+id/imageView3"
                 android:layout_toEndOf="@+id/imageView3"
                 android:layout_marginTop="11dp"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:layout_marginBottom="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Steps Today"
+                android:text="Steps today:"
                 android:id="@+id/textView"
                 android:layout_alignParentTop="true"
                 android:layout_alignLeft="@+id/getsteps"
@@ -71,11 +72,9 @@
                 android:layout_height="100dp"
                 android:id="@+id/imageView3"
                 android:background="@mipmap/steps"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="15dp"
-                android:adjustViewBounds="false" />
+                android:adjustViewBounds="false"
+                android:layout_alignTop="@+id/textView"
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -110,10 +109,8 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             style="?android:attr/progressBarStyleHorizontal"
-            android:max="300"
-            android:progress="50"
             android:secondaryProgress="70"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="140dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="#ffeef1ff" />
@@ -127,18 +124,19 @@
         android:id="@+id/middlelayout">
 
         <Button
-            android:layout_width="243dp"
+            android:layout_width="322dp"
             android:layout_height="wrap_content"
             android:text="Reset your goal"
             android:id="@+id/resetgoal"
             android:layout_gravity="center_horizontal"
             android:background="#b83baf4a"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:textColor="#ffffff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="20dp" />
 
         <Button
-            android:layout_width="245dp"
+            android:layout_width="322dp"
             android:layout_height="wrap_content"
             android:text="Set goal for your family"
             android:id="@+id/setgoalforfamily"
@@ -146,6 +144,7 @@
             android:background="#b93baf4a"
             android:layout_marginTop="15dp"
             android:textColor="#ffffff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="20dp" />
     </LinearLayout>
 </LinearLayout>

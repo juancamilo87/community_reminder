@@ -1,14 +1,11 @@
 package fi.oulu.acp.communityreminder;
 
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -19,11 +16,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
-public class PedometerActivity extends ActionBarActivity implements View.OnClickListener{
-    //private TextView stepValues;
-    private int steps;
+public class PedometerActivity extends ActionBarActivity implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener{
+    private TextView stepValues;
+    private Integer steps;
     private int stepsGoal;
     private StepService stepService;
     private static final int STEP_MSG = 1;
@@ -45,15 +43,15 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("fi.oulu.acp.communityreminder", Context.MODE_PRIVATE);
         stepsGoal = prefs.getInt("yourGoal", 0);
-
+        steps = prefs.getInt("steps", 0);
         stepsBar = (ProgressBar) findViewById(R.id.progress_id);
-        stepsBar.setProgress(0);
+        stepsBar.setProgress(steps);
         stepsBar.setMax(stepsGoal);
 
-        steps = 0;
-        //stepValues = (TextView) findViewById(R.id.step_value);
-        startStepService();
-        bindStepService();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+        stepValues = (TextView) findViewById(R.id.getsteps);
+        //startStepService();
+        //bindStepService();
     }
 
     @Override
@@ -95,7 +93,7 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
-    private ServiceConnection sConnection = new ServiceConnection() {
+    /*private ServiceConnection sConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             stepService = ((StepService.StepBinder)service).getService();
@@ -106,42 +104,43 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
         public void onServiceDisconnected(ComponentName name) {
             stepService = null;
         }
-    };
+    };*/
 
     private void startStepService(){
         startService(new Intent(PedometerActivity.this, StepService.class));
     }
 
-    private void bindStepService(){
+    /*private void bindStepService(){
         bindService(new Intent(PedometerActivity.this,
                 StepService.class), sConnection, Context.BIND_AUTO_CREATE + Context.BIND_DEBUG_UNBIND);
     }
 
     private void unbindStepService(){
         unbindService(sConnection);
-    }
+    }*/
 
-    private void stopService(){
+    /*private void stopService(){
         if (stepService != null){
             stopService(new Intent(PedometerActivity.this,
                     StepService.class));
         }
         isRunning = false;
-    }
+    }*/
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        stopService();
-        unbindStepService();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+        //stopService();
+        //unbindStepService();
     }
 
-    private StepService.ICallBack callBack = new StepService.ICallBack() {
+    /*private StepService.ICallBack callBack = new StepService.ICallBack() {
         @Override
         public void stepChanged(int value) {
             handler.sendMessage(handler.obtainMessage(STEP_MSG, value, 0));
         }
-    };
+    };*/
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg){
@@ -162,13 +161,13 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
             case R.id.resetgoal:
                 //isRunning = false;
                 final Dialog dialog = new Dialog(PedometerActivity.this);
-                final EditText goal = (EditText) dialog.findViewById(R.id.text_goal);
                 dialog.setContentView(R.layout.dialog_yourgoal);
                 dialog.setTitle("Set your goal");
                 Button btnOk = (Button) dialog.findViewById(R.id.btn_goal_ok);
                 btnOk.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        EditText goal = (EditText) dialog.findViewById(R.id.text_goal);
                         if (goal.getText() != null){
                             SharedPreferences.Editor editor = getSharedPreferences("fi.oulu.acp.communityreminder", MODE_PRIVATE).edit();
                             Log.e("++++++++++++++", goal.getText().toString());
@@ -190,20 +189,21 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
             case R.id.setgoalforfamily:
                 //isRunning = false;
                 final Dialog dialog1 = new Dialog(PedometerActivity.this);
-                final EditText goalRemote = (EditText) dialog1.findViewById(R.id.text_goal);
                 dialog1.setContentView(R.layout.dialog_yourgoal);
                 dialog1.setTitle("Set your for your family");
                 Button btnOK = (Button) dialog1.findViewById(R.id.btn_goal_ok);
                 btnOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        EditText goalRemote = (EditText) dialog1.findViewById(R.id.text_goal);
                         String g = goalRemote.getText().toString();
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         String phoneNumber = prefs.getString("phoneNumber", "");
                         ServerUtilities.sendMessage(phoneNumber, "pedometerGoal", g);
                         dialog1.dismiss();
                     }
                 });
+                dialog1.show();
                 Button btnCANCEL = (Button) dialog1.findViewById(R.id.btn_goal_cancel);
                 btnCANCEL.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -211,8 +211,17 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
                         dialog1.dismiss();
                     }
                 });
-                dialog1.show();
                 break;
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("steps")){
+            steps = sharedPreferences.getInt(key, 0);
+            stepsBar.setProgress(steps);
+            Log.d("+++++++++", "blalalal");
+            stepValues.setText(steps.toString());
         }
     }
 }

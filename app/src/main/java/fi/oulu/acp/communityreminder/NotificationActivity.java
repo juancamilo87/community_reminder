@@ -20,7 +20,7 @@ public class NotificationActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_screen);
-        lstViewNotif = (ListView) findViewById(R.id.lstViewNotif);
+        lstViewNotif = (ListView) findViewById(R.id.listView);
         NotificationAdapter adapter = new NotificationAdapter(this, R.layout.notification_row, getNotifications());
         lstViewNotif.setAdapter(adapter);
     }
