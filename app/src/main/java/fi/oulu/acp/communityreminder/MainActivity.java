@@ -251,4 +251,9 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
     }
+
+    public void goToNotifications(View v){
+        Intent intent = new Intent(this, NotificationActivity.class);
+        startActivity(intent);
+    }
 }

@@ -57,7 +57,11 @@ public class ContactsDataSource {
     public String getName(String phone)
     {
         Contact contact = getContact(phone);
-        return contact.getName();
+        if (contact != null){
+            return contact.getName();
+        }
+        else
+            return phone;
     }
 
     public void recreateTable(){

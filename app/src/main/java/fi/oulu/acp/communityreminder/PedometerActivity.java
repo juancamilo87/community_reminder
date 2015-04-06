@@ -162,13 +162,13 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
             case R.id.resetgoal:
                 //isRunning = false;
                 final Dialog dialog = new Dialog(PedometerActivity.this);
-                final EditText goal = (EditText) dialog.findViewById(R.id.text_goal);
                 dialog.setContentView(R.layout.dialog_yourgoal);
                 dialog.setTitle("Set your goal");
                 Button btnOk = (Button) dialog.findViewById(R.id.btn_goal_ok);
                 btnOk.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        EditText goal = (EditText) dialog.findViewById(R.id.text_goal);
                         if (goal.getText() != null){
                             SharedPreferences.Editor editor = getSharedPreferences("fi.oulu.acp.communityreminder", MODE_PRIVATE).edit();
                             Log.e("++++++++++++++", goal.getText().toString());
@@ -190,20 +190,21 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
             case R.id.setgoalforfamily:
                 //isRunning = false;
                 final Dialog dialog1 = new Dialog(PedometerActivity.this);
-                final EditText goalRemote = (EditText) dialog1.findViewById(R.id.text_goal);
                 dialog1.setContentView(R.layout.dialog_yourgoal);
                 dialog1.setTitle("Set your for your family");
                 Button btnOK = (Button) dialog1.findViewById(R.id.btn_goal_ok);
                 btnOK.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        EditText goalRemote = (EditText) dialog1.findViewById(R.id.text_goal);
                         String g = goalRemote.getText().toString();
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         String phoneNumber = prefs.getString("phoneNumber", "");
                         ServerUtilities.sendMessage(phoneNumber, "pedometerGoal", g);
                         dialog1.dismiss();
                     }
                 });
+                dialog1.show();
                 Button btnCANCEL = (Button) dialog1.findViewById(R.id.btn_goal_cancel);
                 btnCANCEL.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -211,7 +212,6 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
                         dialog1.dismiss();
                     }
                 });
-                dialog1.show();
                 break;
         }
     }
