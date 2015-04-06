@@ -126,18 +126,19 @@
         android:id="@+id/middlelayout">
 
         <Button
-            android:layout_width="243dp"
+            android:layout_width="322dp"
             android:layout_height="wrap_content"
             android:text="Reset your goal"
             android:id="@+id/resetgoal"
             android:layout_gravity="center_horizontal"
             android:background="#b83baf4a"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:textColor="#ffffff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="20dp" />
 
         <Button
-            android:layout_width="245dp"
+            android:layout_width="322dp"
             android:layout_height="wrap_content"
             android:text="Set goal for your family"
             android:id="@+id/setgoalforfamily"
@@ -145,6 +146,7 @@
             android:background="#b93baf4a"
             android:layout_marginTop="15dp"
             android:textColor="#ffffff"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="20dp" />
     </LinearLayout>
 </LinearLayout>
