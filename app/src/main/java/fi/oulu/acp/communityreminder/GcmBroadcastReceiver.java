@@ -65,7 +65,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
                 .setContentTitle(source.getName(num))
                 .setContentText(tit)
                 .setSubText(msg)
-                .setSmallIcon(R.drawable.app_icon_notificaton);
+                .setSmallIcon(R.drawable.app_icon_notification);
         noti.setContentIntent(pintentNotification);
         nm.notify(1, noti.build());
         source.close();

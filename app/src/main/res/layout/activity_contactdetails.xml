@@ -63,7 +63,7 @@
                 android:scaleType="fitCenter"
                 android:layout_marginRight="15dp"
 
-                android:src="@drawable/Telephone"
+                android:src="@mipmap/telephone"
                 android:tint="@android:color/white"
                 android:background="@android:color/transparent"
                 android:layout_gravity="center_vertical"

@@ -99,7 +99,7 @@ public class TemperatureService extends IntentService {
                 {
                     if(elapsedTime>maxTime*60&&ambientTemp<5)
                     {
-                        ServerUtilities.sendMessage(userId,"Temperature alarm","He has been for more than "+ Math.floor(elapsedTime/60) + " minutes at "+ ambientTemp + "\\u00B0C.");
+                        ServerUtilities.sendMessage(userId,"Temperature alarm","He has been for more than "+ Math.ceil(elapsedTime/60) + " minutes at "+ (Math.round(ambientTemp*10)/10.0) + "\\u00B0C.");
                         Log.d("Alert","Too long outside");
                     }
                 }

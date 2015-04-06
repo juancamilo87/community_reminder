@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import fi.oulu.acp.communityreminder.db.ContactsDataSource;
 import fi.oulu.acp.communityreminder.db.FriendsDataSource;
@@ -160,16 +162,21 @@ public class HomeScreenActivity extends Activity {
     };*/
 
     private void resetStepsEveryDay(){
-        Calendar updateTime = Calendar.getInstance();
-        updateTime.set(Calendar.DAY_OF_MONTH,updateTime.get(Calendar.DAY_OF_MONTH));
-        updateTime.set(Calendar.HOUR_OF_DAY, 21);
-        updateTime.set(Calendar.MINUTE, 30);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.set(Calendar.DAY_OF_YEAR,cal.get(Calendar.DAY_OF_YEAR)+1);
+        cal.set(Calendar.HOUR_OF_DAY, 00);
+        cal.set(Calendar.MINUTE, 01);
+        cal.set(Calendar.SECOND, 0);
+        Log.d("++++++",System.currentTimeMillis()+"");
+        Log.d("++++++-",cal.getTimeInMillis()+"");
+
         Intent i = new Intent(this, ResetValues.class);
         PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.cancel(pi); // cancel any existing alarms
-        am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                updateTime.getTimeInMillis(),
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                cal.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pi);
     }
 

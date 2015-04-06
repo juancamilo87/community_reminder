@@ -1,5 +1,6 @@
 package fi.oulu.acp.communityreminder;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -13,7 +14,7 @@ import fi.oulu.acp.communityreminder.db.MySQLiteHelper;
 import fi.oulu.acp.communityreminder.db.NotificationsDataSource;
 
 
-public class NotificationActivity extends ActionBarActivity {
+public class NotificationActivity extends Activity {
     private ListView lstViewNotif;
 
     @Override

@@ -1,5 +1,6 @@
 package fi.oulu.acp.communityreminder;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-public class PedometerActivity extends ActionBarActivity implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener{
+public class PedometerActivity extends Activity implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener{
     private TextView stepValues;
     private Integer steps;
     private int stepsGoal;
@@ -142,18 +143,18 @@ public class PedometerActivity extends ActionBarActivity implements View.OnClick
         }
     };*/
 
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg){
-            switch (msg.what){
-                case STEP_MSG:
-                    steps = msg.arg1;
-                    stepsBar.setProgress(steps);
-                    //stepValues.setText("" + steps);
-                    break;
-                default: super.handleMessage(msg);
-            }
-        }
-    };
+//    private Handler handler = new Handler() {
+//        public void handleMessage(Message msg){
+//            switch (msg.what){
+//                case STEP_MSG:
+//                    steps = msg.arg1;
+//                    stepsBar.setProgress(steps);
+//                    //stepValues.setText("" + steps);
+//                    break;
+//                default: super.handleMessage(msg);
+//            }
+//        }
+//    };
 
     @Override
     public void onClick(View v) {
