@@ -1,32 +1,57 @@
 package fi.oulu.acp.communityreminder;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 
-public class PedometerActivity extends ActionBarActivity {
-    private TextView stepValues;
+public class PedometerActivity extends ActionBarActivity implements View.OnClickListener{
+    //private TextView stepValues;
     private int steps;
+    private int stepsGoal;
     private StepService stepService;
     private static final int STEP_MSG = 1;
     private boolean isRunning;
+    private Button btnYourGoal;
+    private Button btnFamilyGoal;
+    private ProgressBar stepsBar;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pedometer);
+        setContentView(R.layout.activity_pedometer_screen);
+
+        btnYourGoal = (Button) findViewById(R.id.resetgoal);
+        btnFamilyGoal = (Button) findViewById(R.id.setgoalforfamily);
+        btnYourGoal.setOnClickListener(this);
+        btnFamilyGoal.setOnClickListener(this);
+
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences("fi.oulu.acp.communityreminder", Context.MODE_PRIVATE);
+        stepsGoal = prefs.getInt("yourGoal", 0);
+
+        stepsBar = (ProgressBar) findViewById(R.id.progress_id);
+        stepsBar.setProgress(0);
+        stepsBar.setMax(stepsGoal);
+
         steps = 0;
-        stepValues = (TextView) findViewById(R.id.step_value);
+        //stepValues = (TextView) findViewById(R.id.step_value);
         startStepService();
         bindStepService();
     }
@@ -123,10 +148,71 @@ public class PedometerActivity extends ActionBarActivity {
             switch (msg.what){
                 case STEP_MSG:
                     steps = msg.arg1;
-                    stepValues.setText("" + steps);
+                    stepsBar.setProgress(steps);
+                    //stepValues.setText("" + steps);
                     break;
                 default: super.handleMessage(msg);
             }
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.resetgoal:
+                //isRunning = false;
+                final Dialog dialog = new Dialog(PedometerActivity.this);
+                final EditText goal = (EditText) dialog.findViewById(R.id.text_goal);
+                dialog.setContentView(R.layout.dialog_yourgoal);
+                dialog.setTitle("Set your goal");
+                Button btnOk = (Button) dialog.findViewById(R.id.btn_goal_ok);
+                btnOk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (goal.getText() != null){
+                            SharedPreferences.Editor editor = getSharedPreferences("fi.oulu.acp.communityreminder", MODE_PRIVATE).edit();
+                            Log.e("++++++++++++++", goal.getText().toString());
+                            editor.putInt("yourGoal", Integer.parseInt(goal.getText().toString()));
+                            editor.commit();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                dialog.show();
+                Button btnCancel = (Button) dialog.findViewById(R.id.btn_goal_cancel);
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                break;
+            case R.id.setgoalforfamily:
+                //isRunning = false;
+                final Dialog dialog1 = new Dialog(PedometerActivity.this);
+                final EditText goalRemote = (EditText) dialog1.findViewById(R.id.text_goal);
+                dialog1.setContentView(R.layout.dialog_yourgoal);
+                dialog1.setTitle("Set your for your family");
+                Button btnOK = (Button) dialog1.findViewById(R.id.btn_goal_ok);
+                btnOK.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String g = goalRemote.getText().toString();
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                        String phoneNumber = prefs.getString("phoneNumber", "");
+                        ServerUtilities.sendMessage(phoneNumber, "pedometerGoal", g);
+                        dialog1.dismiss();
+                    }
+                });
+                Button btnCANCEL = (Button) dialog1.findViewById(R.id.btn_goal_cancel);
+                btnCANCEL.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog1.dismiss();
+                    }
+                });
+                dialog1.show();
+                break;
+        }
+    }
 }

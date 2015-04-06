@@ -22,13 +22,13 @@ import java.util.Map;
 import java.util.Random;
 
 import static fi.oulu.acp.communityreminder.Config.SERVER_URL;
-import static fi.oulu.acp.communityreminder.Config.TAG;
 
 /**
  * Created by alex on 14.3.2015.
  */
 public class ServerUtilities {
-    private static final int MAX_ATTEMPTS = 5;
+    private static final int MAX_ATTEMPTS = 1;
+    private static final String TAG = "ServerUtilities";
     private static final int BACKOFF_MILLI_SECONDS = 2000;
     private static final Random random = new Random();
 
@@ -41,7 +41,7 @@ public class ServerUtilities {
         // Once GCM returns a registration id, we need to register it in the
         // demo server. As the server might be down, we will retry it a couple
         // times.
-        for (int i = 1; i <= MAX_ATTEMPTS; i++) {
+        for (int i = 0; i <= MAX_ATTEMPTS; i++) {
             Log.d(TAG, "Attempt #" + i + " to register");
             try {
                 //displayMessage(context, context.getString(
@@ -124,7 +124,6 @@ public class ServerUtilities {
         new AsyncTask<Object, Void, HttpResponse>(){
             @Override
             protected HttpResponse doInBackground(Object... params){
-                String msg = "";
                 try {
                     /*Bundle data = new Bundle();
                     data.putString("my_message", "Hello World");
@@ -134,12 +133,8 @@ public class ServerUtilities {
                     gcm.send(Config.GOOGLE_SENDER_ID + "@gcm.googleapis.com", id, data);
                     msg = "Sent message";*/
                     String url = "http://pan0166.panoulu.net/community/backend/broadcastAlert.php";
-                    //Map<String, String> par = new HashMap<>();
-                    //par.put("regId", regid);
-                    //par.put("message", "Hey!");
-                    //ServerUtilities.post(url, par);
-
                     url += "?user_id=" + uid + "&message=" + message + "&title=" + title;
+
                     HttpClient httpClient = new DefaultHttpClient();
                     HttpGet httpGet = new HttpGet(url);
 
@@ -153,13 +148,13 @@ public class ServerUtilities {
             }
             @Override
             protected void onPostExecute(HttpResponse msg){
-                Log.e("++++++++", msg.toString());
+                Log.e(TAG, msg.toString());
                 try{
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(msg.getEntity().getContent(),"UTF-8"));
                     String fhg = bufferedReader.readLine();
-                    Log.e("--------", fhg);
+                    Log.e(TAG, fhg);
                 } catch (Exception e){
-
+                    Log.e(TAG, e.toString());
                 }
 
             }
