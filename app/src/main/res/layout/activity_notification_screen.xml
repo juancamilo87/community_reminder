@@ -42,10 +42,10 @@
             android:dividerHeight="1.5dp"
             android:layout_gravity="center_horizontal"
             android:textFilterEnabled="true"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:clickable="true"
-            android:drawSelectorOnTop="false" />
+            android:drawSelectorOnTop="false"
+            android:background="#51fdfff8" />
     </LinearLayout>
 
 </LinearLayout>

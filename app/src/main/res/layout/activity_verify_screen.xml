@@ -24,7 +24,7 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="343dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.11"
             android:gravity="center"
@@ -33,13 +33,6 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/background">
 
-            <TextView
-                android:layout_width="275dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:textColor="@android:color/white"
-                android:textSize="20dp"
-                android:text="Name:"/>
             <EditText
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
@@ -48,27 +41,32 @@
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:id="@+id/editName"
-                android:hint="Name"
-                android:layout_marginBottom="10dp" />
+                android:hint="Input Name"
+                android:layout_marginBottom="10dp"
+                android:textSize="25dp" />
             <EditText
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:ems="10"
                 android:textColor="@android:color/white"
-                android:textColorHint="@android:color/white"
                 android:id="@+id/editPhoneNumber"
                 android:hint="Phone Number"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:textColorHint="#ffffffff"
+                android:textSize="25dp" />
             <RelativeLayout
                 android:layout_width="275dp"
                 android:layout_height="wrap_content">
                 <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@android:drawable/ic_menu_edit"
-                    android:id="@+id/btn_edit_birthday"/>
+                    android:id="@+id/btn_edit_birthday"
+                    android:background="@drawable/edit"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:tint="@android:color/white" />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,13 +78,14 @@
                     android:id="@+id/editBirthday"
                     android:enabled="false"
                     android:hint="Birthday"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="10dp"
+                    android:textSize="25dp" />
                 </RelativeLayout>
 
         </LinearLayout>
         <RelativeLayout
-            android:layout_width="273dp"
-            android:layout_height="35dp"
+            android:layout_width="320dp"
+            android:layout_height="50dp"
             android:id="@+id/verify_button"
             android:alpha=".90"
             android:background="#ff01e86e"
@@ -98,8 +97,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="Verify your phone number"
-                android:textSize="15sp"
-                android:textColor="#fff0fff0"/>
+                android:textSize="25dp"
+                android:textColor="#fff0fff0"
+                android:textStyle="bold" />
 
             <ProgressBar
                 android:id="@+id/login_loading"

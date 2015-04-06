@@ -23,8 +23,8 @@
             android:background="@mipmap/app_icon" />
 
         <RelativeLayout
-            android:layout_width="300dp"
-            android:layout_height="45dp"
+            android:layout_width="320dp"
+            android:layout_height="50dp"
             android:id="@+id/sign_in_button"
             android:layout_gravity="center_horizontal"
             android:alpha=".80"
@@ -37,7 +37,8 @@
                 android:layout_centerInParent="true"
                 android:text="Sign in with phone number"
                 android:textSize="25dp"
-                android:textColor="#fff0fff0"/>
+                android:textColor="#fff0fff0"
+                android:textStyle="bold" />
 
             <ProgressBar
                 android:id="@+id/sign_in_loading"
