@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,6 +52,12 @@ public class ContactsDataSource {
         cursor.moveToFirst();
         return cursor.getInt(0);
 
+    }
+
+    public String getName(String phone)
+    {
+        Contact contact = getContact(phone);
+        return contact.getName();
     }
 
     public void recreateTable(){
@@ -137,13 +142,6 @@ public class ContactsDataSource {
             contact = new Contact("1",phones, name, picture);
         }
         return contact;
-    }
-
-    public String getName(String phone)
-    {
-
-        Contact contact = getContact(phone);
-        return contact.getName();
     }
 
     public class CustomComparator implements Comparator<Contact> {

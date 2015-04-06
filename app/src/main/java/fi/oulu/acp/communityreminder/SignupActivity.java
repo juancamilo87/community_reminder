@@ -3,41 +3,35 @@ package fi.oulu.acp.communityreminder;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
-import android.support.v7.app.ActionBarActivity;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -46,20 +40,21 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
-
-import fi.oulu.acp.communityreminder.tasks.VerifyContactsTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class SignupActivity extends Activity {
 
     private String uid;
+    private String regid;
+
+    AtomicInteger msgId = new AtomicInteger();
+    GoogleCloudMessaging gcm;
+    private Context context;
     private BroadcastReceiver smsReceiver;
     private String finalPhoneNumber;
     private String name;
@@ -72,6 +67,10 @@ public class SignupActivity extends Activity {
     private EditText edTName;
     private EditText edTPhone;
     private RelativeLayout verifyPhone;
+    private final static String TAG = "SignUpActivity";
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private final static String PROPERTY_APP_VERSION = "appVersion";
+    private final static String PROPERTY_REG_ID = "registration_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +96,107 @@ public class SignupActivity extends Activity {
         }
         uid = manager.getDeviceId();
 
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            regid = getRegistrationId(context);
 
+            if (regid.isEmpty()) {
+                registerInBackground();
+            }
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
+
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private String getRegistrationId(Context context){
+        final SharedPreferences prefs = getGCMPreferences(context);
+        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+
+        if (registrationId.isEmpty()){
+            Log.i(TAG, "Registration not found.");
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing registration ID is not guaranteed to work with
+        // the new app version.
+        int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+
+        if (registeredVersion != currentVersion){
+            Log.i(TAG, "App version changed.");
+            return "";
+        }
+
+        return registrationId;
+    }
+
+    private SharedPreferences getGCMPreferences(Context context){
+        return getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+    }
+
+    private static int getAppVersion(Context context){
+        try{
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e){
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    private void registerInBackground(){
+        new AsyncTask<Void, Void, String>(){
+            @Override
+            protected String doInBackground(Void... params){
+                String msg = "";
+                try{
+                    if (gcm == null)
+                        gcm = GoogleCloudMessaging.getInstance(context);
+
+                    regid = gcm.register(Config.GOOGLE_SENDER_ID);
+                    msg = "Device registered, registration ID =" + regid;
+
+                    ServerUtilities.register(context, regid);
+                    storeRegistrationId(context, regid);
+
+                } catch (IOException e){
+                    msg = "Error :" + e.getMessage();
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg){
+
+            }
+        }.execute(null, null, null);
+    }
+
+
+
+    private void storeRegistrationId(Context context, String regId){
+        final SharedPreferences prefs = getGCMPreferences(context);
+        int appVersion = getAppVersion(context);
+        Log.i(TAG, "Saving regId on app version " + appVersion);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PROPERTY_REG_ID, regId);
+        editor.putInt(PROPERTY_APP_VERSION, appVersion);
+        editor.commit();
     }
 
     @Override
