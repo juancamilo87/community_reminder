@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -137,8 +138,16 @@ public class ContactActivity extends FragmentActivity {
 
                     .setPositiveButton("Set", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+
                             Bundle bundle = getArguments();
-                            String[] times= null;
+                            String[] times = new String[6];
+                            times[0] = ((EditText)getDialog().findViewById(R.id.tm_zero)).getText().toString();
+                            times[1] = ((EditText)getDialog().findViewById(R.id.tm_five)).getText().toString();
+                            times[2]= ((EditText)getDialog().findViewById(R.id.tm_ten)).getText().toString();
+                            times[3]= ((EditText)getDialog().findViewById(R.id.tm_fifteen)).getText().toString();
+                            times[4]= ((EditText)getDialog().findViewById(R.id.tm_twenty)).getText().toString();
+                            times[5]= ((EditText)getDialog().findViewById(R.id.tm_other)).getText().toString();
+
                             new ChangeTemperatureTimesTask().execute(bundle.getString("phone"),getActivity(), times);
                         }
                     })

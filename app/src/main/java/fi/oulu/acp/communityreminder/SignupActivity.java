@@ -387,6 +387,12 @@ public class SignupActivity extends Activity {
         editor.putBoolean("signedIn", true);
         editor.putString("name", name);
         editor.putString("uid",uid);
+        editor.putInt("timeZero",40);
+        editor.putInt("timeFive",20);
+        editor.putInt("timeTen",15);
+        editor.putInt("timeFifteen",12);
+        editor.putInt("timeTwenty",10);
+        editor.putInt("timeOther",8);
         editor.apply();
 
         Intent intent = new Intent(this, HomeScreenActivity.class);
