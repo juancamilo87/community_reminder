@@ -139,6 +139,13 @@ public class ContactsDataSource {
         return contact;
     }
 
+    public String getName(String phone)
+    {
+
+        Contact contact = getContact(phone);
+        return contact.getName();
+    }
+
     public class CustomComparator implements Comparator<Contact> {
         @Override
         public int compare(Contact o1, Contact o2) {
