@@ -60,7 +60,8 @@ public class NotificationsDataSource {
     }
 
     public Cursor getNotificationsFromContact(String phoneNumber){
-        return database.query(MySQLiteHelper.TABLE_NOTIFICATIONS, allColumns, MySQLiteHelper.COLUMN_CONTACTS_PHONE, new String[]{phoneNumber}, null, null, MySQLiteHelper.COLUMN_NOTIFICATION_TIMESTAMP + " DESC");
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_NOTIFICATIONS, allColumns, MySQLiteHelper.COLUMN_NOTIFICATION_PHONE + " = "+phoneNumber, null, null, null, MySQLiteHelper.COLUMN_NOTIFICATION_TIMESTAMP + " DESC");
+        return cursor;
     }
 
 }

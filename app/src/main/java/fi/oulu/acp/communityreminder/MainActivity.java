@@ -48,17 +48,17 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         context = getApplicationContext();
-
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-            regid = getRegistrationId(context);
-
-            if (regid.isEmpty()) {
-                //registerInBackground();
-            }
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
-        }
+//
+//        if (checkPlayServices()) {
+//            gcm = GoogleCloudMessaging.getInstance(this);
+//            regid = getRegistrationId(context);
+//
+//            if (regid.isEmpty()) {
+//                registerInBackground();
+//            }
+//        } else {
+//            Log.i(TAG, "No valid Google Play Services APK found.");
+//        }
 
     }
 

@@ -95,6 +95,20 @@ public class FriendsDataSource {
         database.update(MySQLiteHelper.TABLE_FRIENDS_DATA,cv,MySQLiteHelper.COLUMN_FRIEND_PHONE+ " = '" + phone+ "'",null);
     }
 
+    public String getName(String phone)
+    {
+        Cursor cursor = database.query(MySQLiteHelper.TABLE_FRIENDS_DATA,allColumns,MySQLiteHelper.COLUMN_FRIEND_PHONE+ " = '" + phone
+                + "'",null,null,null,null);
+
+        String name = "";
+
+        if(cursor.moveToFirst())
+        {
+            name = cursor.getString(2);
+        }
+        return name;
+    }
+
     public class CustomComparator implements Comparator<Contact> {
         @Override
         public int compare(Contact o1, Contact o2) {
