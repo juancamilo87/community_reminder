@@ -32,7 +32,8 @@
         <EditText
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:id="@+id/tm_zero"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +54,8 @@
         <EditText
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:id="@+id/tm_five"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -75,7 +77,8 @@
         <EditText
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:id="@+id/tm_ten"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -96,7 +99,8 @@
         <EditText
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:id="@+id/tm_fifteen"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -118,7 +122,8 @@
         <EditText
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:id="@+id/tm_twenty"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -139,7 +144,8 @@
         <EditText
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:id="@+id/tm_other"
             />
         <TextView
             android:layout_width="wrap_content"

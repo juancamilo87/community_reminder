@@ -28,12 +28,12 @@ public class TemperatureService extends IntentService {
     private static String KEY = "5c76a5f28408e8aae498bd15b24d32cc";
     private static String CITY_ID = "643492";
 
-    private static int timeZero = 40;
-    private static int timeFive = 20;
-    private static int timeTen = 15;
-    private static int timeFifteen = 12;
-    private static int timeTwenty = 10;
-    private static int timeOther = 8;
+    private int timeZero = 40;
+    private int timeFive = 20;
+    private int timeTen = 15;
+    private int timeFifteen = 12;
+    private int timeTwenty = 10;
+    private int timeOther = 8;
 
 
     private long startDownTemperature;
@@ -90,7 +90,7 @@ public class TemperatureService extends IntentService {
                 long elapsedTime = System.currentTimeMillis() - startDownTemperature;
                 elapsedTime /= 1000;
                 Log.d("Elapsed",""+elapsedTime);
-                if(highestTemp-temp>10)
+                if(highestTemp-temp>5)
                 {
                     if(elapsedTime>maxTime*60&&ambientTemp<5)
                     {
@@ -174,6 +174,7 @@ public class TemperatureService extends IntentService {
     }
 
     private void callService(int time) {
+        updateValues();
         _handler.removeCallbacks(_runnable);
         _handler.postDelayed(_runnable, time*60*1000);
     }
@@ -184,10 +185,21 @@ public class TemperatureService extends IntentService {
     }
 
     private void startService(){
+        updateValues();
         _handler.removeCallbacks(_runnable);
         _handler.post(_runnable);
 
         _handlerAmb.removeCallbacks(_runnableAmb);
         _handlerAmb.post(_runnableAmb);
+    }
+
+    private void updateValues(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        timeZero = prefs.getInt("timeZero",40);
+        timeFive = prefs.getInt("timeFive",20);
+        timeTen = prefs.getInt("timeTen",15);
+        timeFifteen = prefs.getInt("timeFifteen",12);
+        timeTwenty = prefs.getInt("timeTwenty",10);
+        timeOther = prefs.getInt("timeOther",8);
     }
 }
