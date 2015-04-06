@@ -27,7 +27,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#b93baf4a"
+        android:background="#c43baf4a"
         android:id="@+id/firstlayout"
         android:gravity="center">
 
@@ -63,7 +63,7 @@
                 android:scaleType="fitCenter"
                 android:layout_marginRight="15dp"
 
-                android:src="@drawable/telephone"
+                android:src="@drawable/Telephone"
                 android:tint="@android:color/white"
                 android:background="@android:color/transparent"
                 android:layout_gravity="center_vertical"
