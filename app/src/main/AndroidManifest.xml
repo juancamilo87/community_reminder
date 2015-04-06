@@ -132,8 +132,17 @@
             android:name=".services.TemperatureService"
             android:exported="false" />
 
+        <service
+            android:name=".services.ResetValues"
+            android:exported="false" />
+
         <receiver android:name=".TemperatureBroadcastReceiver" />
         <receiver android:name=".TemperatureNotificationManager" />
+        <receiver android:name=".receivers.BatteryLevelReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_BATTERY_LOW"/>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".NotificationActivity"

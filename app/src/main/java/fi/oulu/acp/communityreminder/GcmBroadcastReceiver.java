@@ -35,7 +35,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         String num = extras.getString("PhoneNumber", "");
 
         Toast.makeText(context, tit + msg + num, Toast.LENGTH_LONG).show();
-        Notification notification = new Notification(R.drawable.app_icon_notificaton, source.getName(num) + "\n"
+        Notification notification = new Notification(R.drawable.app_icon_notification, source.getName(num) + "\n"
                 + tit + "\n" + msg, System.currentTimeMillis());
         notification.setLatestEventInfo(context, tit, msg, null);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;

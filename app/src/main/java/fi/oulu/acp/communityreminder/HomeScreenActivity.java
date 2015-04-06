@@ -1,6 +1,8 @@
 package fi.oulu.acp.communityreminder;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -14,6 +16,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -39,11 +42,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
 import fi.oulu.acp.communityreminder.db.ContactsDataSource;
 import fi.oulu.acp.communityreminder.db.FriendsDataSource;
+import fi.oulu.acp.communityreminder.services.ResetValues;
 import fi.oulu.acp.communityreminder.services.TemperatureService;
 import fi.oulu.acp.communityreminder.tasks.VerifyContactsTask;
 
@@ -88,9 +93,36 @@ public class HomeScreenActivity extends Activity {
         initializeProblemButton();
         initializeContacts();
         initializeTempAlerts();
+        initializeSettings();
+        resetStepsEveryDay();
 
         //Second
 
+    }
+
+    private void resetStepsEveryDay(){
+        Calendar updateTime = Calendar.getInstance();
+        updateTime.set(Calendar.DAY_OF_MONTH,updateTime.get(Calendar.DAY_OF_MONTH));
+        updateTime.set(Calendar.HOUR_OF_DAY, 21);
+        updateTime.set(Calendar.MINUTE, 30);
+        Intent i = new Intent(this, ResetValues.class);
+        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.cancel(pi); // cancel any existing alarms
+        am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                updateTime.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pi);
+    }
+
+    private void initializeSettings(){
+        ImageButton btnSettings = (ImageButton) findViewById(R.id.SettingsButton);
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (context, SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initializeTempAlerts() {
@@ -146,7 +178,7 @@ public class HomeScreenActivity extends Activity {
                     toast.cancel();
                     Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "LifeProblem!","Iamintrouble!");
+                    ServerUtilities.sendMessage(uid, "Life Problem","I have some difficult problems to solve, please help me as soon as possible!");
                     problemTaps = 0;
                     Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -202,7 +234,7 @@ public class HomeScreenActivity extends Activity {
                     toast.cancel();
                     Toast.makeText(getApplicationContext(),"Emergency alert sent!",Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "Emergency!","Iamintrouble!");
+                    ServerUtilities.sendMessage(uid, "Health Problem","My life is in danger and I need to see a doctor right now!");
                     emergencyTaps = 0;
                     Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 

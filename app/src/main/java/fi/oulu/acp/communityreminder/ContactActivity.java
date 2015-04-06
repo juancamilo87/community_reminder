@@ -59,7 +59,7 @@ public class ContactActivity extends FragmentActivity {
         txtName.setText(name);
         txtPhone.setPaintFlags(txtPhone.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         txtPhone.setText(phone);
-        if(!birthday.equals("")&&!birthday.equals("null"))
+        if(!birthday.equals("")&&!birthday.equals("null")&&!birthday.equals("0000-00-00"))
         {
             txtBirthday.setText(birthday);
         }

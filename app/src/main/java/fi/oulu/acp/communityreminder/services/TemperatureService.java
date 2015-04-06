@@ -9,6 +9,7 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,6 +23,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import fi.oulu.acp.communityreminder.ServerUtilities;
+
 
 public class TemperatureService extends IntentService {
 
@@ -34,6 +37,7 @@ public class TemperatureService extends IntentService {
     private int timeFifteen = 12;
     private int timeTwenty = 10;
     private int timeOther = 8;
+    private String userId;
 
 
     private long startDownTemperature;
@@ -80,6 +84,7 @@ public class TemperatureService extends IntentService {
 
             int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0);
             float temp = (float) temperature/(float) 10;
+            Toast.makeText(getApplicationContext(),"Battery temp: "+temp,Toast.LENGTH_LONG).show();
             if(temp>=prevTemp)
             {
                 startDownTemperature = System.currentTimeMillis();
@@ -94,7 +99,7 @@ public class TemperatureService extends IntentService {
                 {
                     if(elapsedTime>maxTime*60&&ambientTemp<5)
                     {
-                        //TODO notification
+                        ServerUtilities.sendMessage(userId,"Temperature alarm","He has been for more than "+ Math.floor(elapsedTime/60) + " minutes at "+ ambientTemp + "\\u00B0C.");
                         Log.d("Alert","Too long outside");
                     }
                 }
@@ -169,6 +174,8 @@ public class TemperatureService extends IntentService {
         startDownTemperature = System.currentTimeMillis();
         prevTemp = -50;
         ambientTemp = 20;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        userId = prefs.getString("phoneNumber","");
         startService();
         return START_STICKY;
     }

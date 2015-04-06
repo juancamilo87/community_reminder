@@ -7,6 +7,8 @@ import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
@@ -123,22 +125,23 @@ public class ServerUtilities {
     public static void sendMessage(final String uid, final String title, final String message){
         new AsyncTask<Object, Void, HttpResponse>(){
             @Override
-            protected HttpResponse doInBackground(Object... params){
+            protected HttpResponse doInBackground(Object... objects){
                 try {
-                    /*Bundle data = new Bundle();
-                    data.putString("my_message", "Hello World");
-                    data.putString("my_action",
-                            "fi.oulu.acp.communityreminder.ECHO_NOW");
-                    String id = Integer.toString(msgId.incrementAndGet());
-                    gcm.send(Config.GOOGLE_SENDER_ID + "@gcm.googleapis.com", id, data);
-                    msg = "Sent message";*/
+                    String json = "{\"user_id\":\""+uid+"\"";
+                    json+= ", \"message\":\""+message+"\"";
+                    json+= ", \"title\":\""+title+"\"";
+                    json += "}";
+                    StringEntity params = new StringEntity(json);
+
+
                     String url = "http://pan0166.panoulu.net/community/backend/broadcastAlert.php";
-                    url += "?user_id=" + uid + "&message=" + message + "&title=" + title;
 
                     HttpClient httpClient = new DefaultHttpClient();
-                    HttpGet httpGet = new HttpGet(url);
+                    HttpPost httpPost = new HttpPost(url);
+                    httpPost.addHeader("content-type", "application/x-www-form-urlencoded");
+                    httpPost.setEntity(params);
 
-                    HttpResponse httpResponse = httpClient.execute(httpGet);
+                    HttpResponse httpResponse = httpClient.execute(httpPost);
                     return httpResponse;
                 } catch (IOException ex) {
                     Log.e("++++++++", "BLA");
