@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import fi.oulu.acp.communityreminder.db.NotificationsDataSource;
+import fi.oulu.acp.communityreminder.tasks.ChangeTemperatureTimesTask;
 
 /**
  * Created by JuanCamilo on 4/5/2015.
@@ -99,7 +100,7 @@ public class ContactActivity extends FragmentActivity {
 
         NotificationsCursorAdapter adapter = new NotificationsCursorAdapter(this, R.layout.notification_row, cursor, 0);
         notifications.setAdapter(adapter);
-
+        notifications.setEmptyView(findViewById(R.id.no_notifications_txt));
 
         Button setTemp = (Button) findViewById(R.id.btn_temp_limits);
         setTemp.setOnClickListener(new View.OnClickListener() {
@@ -119,11 +120,14 @@ public class ContactActivity extends FragmentActivity {
     public void showTempDialog() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new TemperatureDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("phone",phone);
+        dialog.setArguments(bundle);
         dialog.show(getFragmentManager(), "TemperatureDialogFragment");
     }
 
 
-    public class TemperatureDialogFragment extends DialogFragment {
+    public static class TemperatureDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
@@ -133,7 +137,9 @@ public class ContactActivity extends FragmentActivity {
 
                     .setPositiveButton("Set", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
+                            Bundle bundle = getArguments();
+                            String[] times= null;
+                            new ChangeTemperatureTimesTask().execute(bundle.getString("phone"),getActivity(), times);
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
