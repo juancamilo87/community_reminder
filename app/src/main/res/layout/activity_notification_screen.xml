@@ -36,16 +36,22 @@
 
         <ListView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="536dp"
             android:id="@+id/lstViewNotif"
-            android:divider="#44e6fde9"
+            android:divider="#c3e3e3de"
             android:dividerHeight="1.5dp"
             android:layout_gravity="center_horizontal"
             android:textFilterEnabled="true"
-            android:layout_marginBottom="10dp"
             android:clickable="true"
             android:drawSelectorOnTop="false"
-            android:background="#51fdfff8" />
+            android:background="#63fdfff8" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/textView5"
+        android:layout_gravity="right" />
 
 </LinearLayout>
