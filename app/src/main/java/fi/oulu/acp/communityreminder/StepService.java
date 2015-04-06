@@ -2,10 +2,12 @@ package fi.oulu.acp.communityreminder;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class StepService extends Service implements StepListener{
@@ -13,7 +15,7 @@ public class StepService extends Service implements StepListener{
     private int stepCount = 0;
     private Sensor sensor;
     private SensorManager sensorManager;
-    private ICallBack callBack;
+    //private ICallBack callBack;
     private IBinder binder = new StepBinder();
 
     public StepService() {
@@ -57,18 +59,23 @@ public class StepService extends Service implements StepListener{
         sensorManager.unregisterListener(stepDetector);
     }
 
-    public interface ICallBack{
+    /*public interface ICallBack{
         public void stepChanged(int value);
-    }
+    }*/
 
-    public void registerCallBack(ICallBack cb){
-        callBack = cb;
-    }
+
 
     @Override
     public void onStep(){
         stepCount++;
-        callBack.stepChanged(stepCount);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("steps", stepCount);
+        editor.apply();
+        /*   public void registerCallBack(ICallBack cb){
+        callBack = cb;
+    }*/
+        //callBack.stepChanged(stepCount);
         //notifyListener();
     }
 }

@@ -10,20 +10,14 @@ import android.widget.Toast;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 /**
  * Created by JuanCamilo on 4/6/2015.
@@ -42,7 +36,7 @@ public class GetTemperatureTimesTask extends AsyncTask<Object, Void, HttpRespons
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            String url = "http://pan0166.panoulu.net/community/backend/changeTemperatures.php";
+            String url = "http://pan0166.panoulu.net/community/backend/getTemperatures.php";
             url+="?user_id="+userId;
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
@@ -94,6 +88,7 @@ public class GetTemperatureTimesTask extends AsyncTask<Object, Void, HttpRespons
                         editor.putInt("timeTwenty",Integer.parseInt((String)jsonArray.get(4)));
                         editor.putInt("timeOther",Integer.parseInt((String)jsonArray.get(5)));
                         editor.apply();
+                        Toast.makeText(context, prefs.getInt("timeZero", 0), Toast.LENGTH_LONG).show();
 
                     }
                 }catch(Exception e){}

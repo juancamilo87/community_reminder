@@ -244,7 +244,7 @@ public class MainActivity extends ActionBarActivity {
     public void goToPedometerActivity(View view){
         Intent intent = new Intent(this, PedometerActivity.class);
         startActivity(intent);
-        sendMessage();
+        //sendMessage();
     }
 
     public void goToSignIn(View view){
