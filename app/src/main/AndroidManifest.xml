@@ -19,9 +19,6 @@
         android:name="fi.oulu.acp.communityreminder.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -112,7 +109,7 @@
         </activity>
         <activity
             android:name=".SignInActivity"
-            android:label="@string/title_activity_signin" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -141,7 +138,7 @@
         <receiver android:name=".TemperatureNotificationManager" />
         <receiver android:name=".receivers.BatteryLevelReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.ACTION_BATTERY_LOW"/>
+                <action android:name="android.intent.action.BATTERY_LOW"/>
             </intent-filter>
         </receiver>
 

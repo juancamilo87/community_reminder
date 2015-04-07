@@ -36,21 +36,24 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pedometer_screen);
+        context = this;
 
         btnYourGoal = (Button) findViewById(R.id.resetgoal);
         btnFamilyGoal = (Button) findViewById(R.id.setgoalforfamily);
         btnYourGoal.setOnClickListener(this);
         btnFamilyGoal.setOnClickListener(this);
 
-        SharedPreferences prefs = getApplicationContext().getSharedPreferences("fi.oulu.acp.communityreminder", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         stepsGoal = prefs.getInt("yourGoal", 0);
         steps = prefs.getInt("steps", 0);
+
         stepsBar = (ProgressBar) findViewById(R.id.progress_id);
         stepsBar.setProgress(steps);
         stepsBar.setMax(stepsGoal);
 
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         stepValues = (TextView) findViewById(R.id.getsteps);
+        stepValues.setText(steps.toString());
         //startStepService();
         //bindStepService();
     }
@@ -170,9 +173,11 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
                     public void onClick(View v) {
                         EditText goal = (EditText) dialog.findViewById(R.id.text_goal);
                         if (goal.getText() != null){
-                            SharedPreferences.Editor editor = getSharedPreferences("fi.oulu.acp.communityreminder", MODE_PRIVATE).edit();
+                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
                             Log.e("++++++++++++++", goal.getText().toString());
                             editor.putInt("yourGoal", Integer.parseInt(goal.getText().toString()));
+                            stepsGoal = Integer.parseInt(goal.getText().toString());
+                            stepsBar.setMax(stepsGoal);
                             editor.commit();
                             dialog.dismiss();
                         }
@@ -220,7 +225,10 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("steps")){
             steps = sharedPreferences.getInt(key, 0);
-            stepsBar.setProgress(steps);
+            if(steps <= stepsGoal)
+            {
+                stepsBar.setProgress(steps);
+            }
             Log.d("+++++++++", "blalalal");
             stepValues.setText(steps.toString());
         }

@@ -78,6 +78,7 @@ public class TemperatureService extends IntentService {
             {
                 maxTime = timeOther;
             }
+            Log.d("maxTimetemp",maxTime+"");
 
             IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             Intent batteryStatus = getApplicationContext().registerReceiver(null, iFilter);
@@ -85,20 +86,24 @@ public class TemperatureService extends IntentService {
             int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0);
             float temp = (float) temperature/(float) 10;
             Toast.makeText(getApplicationContext(),"Battery temp: "+temp,Toast.LENGTH_LONG).show();
-            if(temp>=prevTemp)
+            if(temp>prevTemp)
             {
+                Log.d("TEmp","higher temp");
                 startDownTemperature = System.currentTimeMillis();
                 highestTemp = temp;
             }
             else
             {
+                Log.d("Temp","lower temp");
                 long elapsedTime = System.currentTimeMillis() - startDownTemperature;
                 elapsedTime /= 1000;
-                Log.d("Elapsed",""+elapsedTime);
+                Log.d("ElapsedTemp",""+elapsedTime);
                 if(highestTemp-temp>5)
                 {
+                    Log.d("temp","more than 5 difference");
                     if(elapsedTime>maxTime*60&&ambientTemp<5)
                     {
+                        Log.d("temp","time to send alert");
                         ServerUtilities.sendMessage(userId,"Temperature alarm","He has been for more than "+ Math.ceil(elapsedTime/60) + " minutes at "+ (Math.round(ambientTemp*10)/10.0) + "\\u00B0C.");
                         Log.d("Alert","Too long outside");
                     }

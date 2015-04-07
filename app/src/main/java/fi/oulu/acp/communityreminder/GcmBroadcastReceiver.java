@@ -9,7 +9,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import fi.oulu.acp.communityreminder.db.ContactsDataSource;
@@ -59,13 +62,28 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
 
         Intent newIntent = new Intent(context, NotificationActivity.class);
 
-        PendingIntent pintentNotification = PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pintentNotification = PendingIntent.getActivity(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + num));
+        PendingIntent piCall = PendingIntent.getActivity(context, 0, callIntent, 0);
+
 
         Notification.Builder noti = new Notification.Builder(context)
                 .setContentTitle(source.getName(num))
                 .setContentText(tit)
                 .setSubText(msg)
-                .setSmallIcon(R.drawable.app_icon_notification);
+                .setSmallIcon(R.drawable.app_icon_notification)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
+                        R.drawable.app_icon_notification))
+                .setVibrate(new long[]{100, 500, 300, 500})
+                .setStyle(new Notification.BigTextStyle()
+                        .setBigContentTitle(tit)
+                        .bigText(msg)
+                        .setSummaryText(source.getName(num)))
+                .addAction(R.mipmap.telephone,
+                        "Call", piCall)
+                .setAutoCancel(true);
         noti.setContentIntent(pintentNotification);
         nm.notify(1, noti.build());
         source.close();

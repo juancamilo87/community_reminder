@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import fi.oulu.acp.communityreminder.ServerUtilities;
 
@@ -15,11 +16,9 @@ import fi.oulu.acp.communityreminder.ServerUtilities;
 public class BatteryLevelReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getAction().equals(Intent.ACTION_BATTERY_LOW))
-        {
+        Log.d("+++++","Low battery");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             String phone = prefs.getString("phoneNumber","");
             ServerUtilities.sendMessage(phone,"Low Battery","The battery of my smartphone is running out soon!");
-        }
     }
 }

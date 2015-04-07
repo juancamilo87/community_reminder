@@ -244,7 +244,7 @@ public class HomeScreenActivity extends Activity {
                     toast.cancel();
                     Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "LifeProblem!","Iamintrouble!");
+                    ServerUtilities.sendMessage(uid, "Health Emergency","My life is in danger and I need to see a doctor right now!");
                     problemTaps = 0;
                     Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -300,7 +300,7 @@ public class HomeScreenActivity extends Activity {
                     toast.cancel();
                     Toast.makeText(getApplicationContext(),"Emergency alert sent!",Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "Emergency!","Iamintrouble!");
+                    ServerUtilities.sendMessage(uid, "Life Problem","I have some difficult problems to solve, please help me as soon as possible!");
                     emergencyTaps = 0;
                     Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 

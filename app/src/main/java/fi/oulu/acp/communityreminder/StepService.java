@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class StepService extends Service implements StepListener{
     private StepDetector stepDetector;
-    private int stepCount = 0;
+    private int stepCount;
     private Sensor sensor;
     private SensorManager sensorManager;
     //private ICallBack callBack;
@@ -31,6 +31,9 @@ public class StepService extends Service implements StepListener{
     public void onCreate(){
         Log.i("STEPservice", "[SERVICE] onCreate");
         super.onCreate();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        stepCount = prefs.getInt("steps",0);
         stepDetector = new StepDetector();
         stepDetector.addStepListener(this);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -71,6 +74,11 @@ public class StepService extends Service implements StepListener{
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt("steps", stepCount);
+        int goal = preferences.getInt("yourGoal",100000);
+        if(stepCount == goal)
+        {
+            ServerUtilities.sendMessage(preferences.getString("phoneNumber",""),"Step goal reached!","Just finished the step goal for today!");
+        }
         editor.apply();
         /*   public void registerCallBack(ICallBack cb){
         callBack = cb;
