@@ -66,6 +66,7 @@
         </LinearLayout>
 
         <ListView
+            style="@style/listview"
             android:layout_width="320dp"
             android:layout_height="match_parent"
             android:id="@+id/contactsname"
