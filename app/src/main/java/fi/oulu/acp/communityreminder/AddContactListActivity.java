@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.flurry.android.FlurryAgent;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,6 +44,7 @@ public class AddContactListActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("AddContactListActivity");
         context = this;
         setContentView(R.layout.activity_gotophonecontacts);
         lv = (ListView) findViewById(R.id.phonecontacts);

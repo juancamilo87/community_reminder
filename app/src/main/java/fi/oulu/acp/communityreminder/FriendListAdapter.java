@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.flurry.android.FlurryAgent;
+
 import java.util.ArrayList;
 
 import fi.oulu.acp.communityreminder.tasks.VerifyFriendTask;
@@ -84,6 +86,7 @@ public class FriendListAdapter extends ArrayAdapter<Contact> {
                             public void onClick(View v) {
                                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(sContext);
                                 String user_id = prefs.getString("phoneNumber","none");
+                                FlurryAgent.logEvent("Accept_Contact_As_Friend");
                                 (new VerifyFriendTask()).execute(sContext, user_id, friend_id);
                                 acceptButton.setVisibility(View.GONE);
                                 add_progress.setVisibility(View.VISIBLE);

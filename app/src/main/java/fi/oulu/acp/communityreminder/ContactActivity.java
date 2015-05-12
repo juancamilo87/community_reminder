@@ -24,6 +24,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import fi.oulu.acp.communityreminder.db.NotificationsDataSource;
 import fi.oulu.acp.communityreminder.tasks.ChangeTemperatureTimesTask;
 
@@ -42,6 +47,7 @@ public class ContactActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("ContactActivity");
         context = this;
         setContentView(R.layout.activity_contactdetails);
         Intent intent = getIntent();
@@ -82,6 +88,10 @@ public class ContactActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    Map<String, String> eventParams = new HashMap<String, String>();
+
+                    eventParams.put("Origin", "ContactActivity");
+                    FlurryAgent.logEvent("Call_Contact",eventParams);
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
                     callIntent.setData(Uri.parse("tel:" + phone));
                     startActivity(callIntent);
@@ -148,6 +158,7 @@ public class ContactActivity extends FragmentActivity {
                             times[4]= ((EditText)getDialog().findViewById(R.id.tm_twenty)).getText().toString();
                             times[5]= ((EditText)getDialog().findViewById(R.id.tm_other)).getText().toString();
 
+                            FlurryAgent.logEvent("Changed_Temperatures_of_Contact");
                             new ChangeTemperatureTimesTask().execute(bundle.getString("phone"),getActivity(), times);
                         }
                     })

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.flurry.android.FlurryAgent;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -18,6 +20,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -123,6 +128,20 @@ public class ServerUtilities {
         }
     }
     public static void sendMessage(final String uid, final String title, final String message){
+        Map<String, String> notificationParams = new HashMap<String, String>();
+
+        notificationParams.put("Title", title);
+        notificationParams.put("Message", message);
+        DateFormat datef = new SimpleDateFormat("yyyy.MM.dd");
+        DateFormat dayf = new SimpleDateFormat("EEE");
+        DateFormat timef = new SimpleDateFormat("HH:mm Z");
+        String date = datef.format(Calendar.getInstance().getTime());
+        String day = dayf.format(Calendar.getInstance().getTime());
+        String time = timef.format(Calendar.getInstance().getTime());
+        notificationParams.put("Date", date);
+        notificationParams.put("Day", day);
+        notificationParams.put("Time", time);
+        FlurryAgent.logEvent("Notification_sent", notificationParams);
         new AsyncTask<Object, Void, HttpResponse>(){
             @Override
             protected HttpResponse doInBackground(Object... objects){

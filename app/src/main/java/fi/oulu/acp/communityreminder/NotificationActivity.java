@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.flurry.android.FlurryAgent;
+
 import java.util.ArrayList;
 
 import fi.oulu.acp.communityreminder.db.MySQLiteHelper;
@@ -20,6 +22,7 @@ public class NotificationActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("NotificationActivity");
         setContentView(R.layout.activity_notification_screen);
         lstViewNotif = (ListView) findViewById(R.id.listView);
         NotificationAdapter adapter = new NotificationAdapter(this, R.layout.notification_row, getNotifications());

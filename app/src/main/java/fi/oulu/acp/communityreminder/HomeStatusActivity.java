@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
+
 import java.util.List;
 
 
@@ -33,6 +35,7 @@ public class HomeStatusActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("HomeStatusActivity");
         setContentView(R.layout.activity_home_status);
 
         //Setup ListView and its Adapter to display WiFi discoveries

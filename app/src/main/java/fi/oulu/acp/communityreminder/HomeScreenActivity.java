@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.apache.http.Header;
@@ -75,6 +76,7 @@ public class HomeScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("HomeScreenActivity");
         setContentView(R.layout.activity_home_screen);
         context = this;
         toast = Toast.makeText(getApplicationContext(), "Start", Toast.LENGTH_SHORT);
@@ -185,7 +187,7 @@ public class HomeScreenActivity extends Activity {
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent (context, SettingsActivity.class);
+                Intent intent = new Intent(context, SettingsActivity.class);
                 startActivity(intent);
             }
         });
@@ -199,7 +201,6 @@ public class HomeScreenActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     private void initializeContacts() {
@@ -240,8 +241,13 @@ public class HomeScreenActivity extends Activity {
             public void onClick(View v) {
                 handler.removeCallbacks(restartTapCount);
                 problemTaps++;
+                if(problemTaps==1)
+                {
+                    FlurryAgent.logEvent("Health_Emergency_Started");
+                }
                 if (problemTaps == tapsForEmergency) {
                     toast.cancel();
+                    FlurryAgent.logEvent("Health_Emergency_Sent");
                     Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
                     ServerUtilities.sendMessage(uid, "Health Emergency","My life is in danger and I need to see a doctor right now!");
@@ -295,9 +301,14 @@ public class HomeScreenActivity extends Activity {
             public void onClick(View v) {
                 handler.removeCallbacks(restartTapCount);
                 emergencyTaps++;
+                if(emergencyTaps==1)
+                {
+                    FlurryAgent.logEvent("Life_Problem_Started");
+                }
                 if(emergencyTaps==tapsForEmergency)
                 {
                     toast.cancel();
+                    FlurryAgent.logEvent("Life_Problem_Sent");
                     Toast.makeText(getApplicationContext(),"Emergency alert sent!",Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
                     ServerUtilities.sendMessage(uid, "Life Problem","I have some difficult problems to solve, please help me as soon as possible!");

@@ -12,6 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.flurry.android.FlurryAgent;
+
 import java.util.ArrayList;
 
 import fi.oulu.acp.communityreminder.tasks.AddFriendTask;
@@ -58,6 +60,7 @@ public class ContactListAdapter extends ArrayAdapter<Contact> {
                     public void onClick(View v) {
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(sContext);
                         String user_id = prefs.getString("phoneNumber","none");
+                        FlurryAgent.logEvent("Add_Contact_As_Friend");
                         new AddFriendTask().execute(sContext, user_id, friend_id);
                         remove(getItem(position));
                     }

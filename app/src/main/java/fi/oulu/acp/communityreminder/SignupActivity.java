@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -75,7 +76,7 @@ public class SignupActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        FlurryAgent.logEvent("SignUpActivity");
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(this);
@@ -142,7 +143,7 @@ public class SignupActivity extends Activity {
 
     private void verifyPhone()
     {
-
+        FlurryAgent.logEvent("Sign_Up_Started");
         disable();
         name = edTName.getText().toString();
         finalPhoneNumber = edTPhone.getText().toString();
@@ -159,10 +160,12 @@ public class SignupActivity extends Activity {
                 smsReceiver = new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+                        FlurryAgent.logEvent("Sign_Up_message_received");
                         Object[] pdus=(Object[])intent.getExtras().get("pdus");
                         SmsMessage shortMessage=SmsMessage.createFromPdu((byte[]) pdus[0]);
 
                         String sender = shortMessage.getOriginatingAddress();
+                        sender = sender.replaceAll(" ","");
                         String message = shortMessage.getDisplayMessageBody();
                         Log.d("Tag", "Message received from sender: "+ sender + " with message: " + message);
                         String newNumber = finalPhoneNumber;
@@ -209,6 +212,7 @@ public class SignupActivity extends Activity {
                             {
                                 enable();
                                 Toast.makeText(sContext, "Error verifying phone number", Toast.LENGTH_SHORT);
+                                FlurryAgent.logEvent("Sign_Up_message_timeout");
 
                                 try{
                                     sContext.unregisterReceiver(smsReceiver);
@@ -274,6 +278,7 @@ public class SignupActivity extends Activity {
 
 
     private void registerUserPhp(){
+        FlurryAgent.logEvent("Sign_Up_started");
         new HTTPPost().execute(this);
 
     }
@@ -338,6 +343,7 @@ public class SignupActivity extends Activity {
                 String responseCode = headers[3].getValue();
                 if(responseCode.equals("409")){
                     Log.e("Sign Up","Unknown error");
+                    FlurryAgent.logEvent("Sign_Up_Error");
                 }
                 else if(responseCode.equals("201"))
                 {
@@ -345,11 +351,13 @@ public class SignupActivity extends Activity {
                 }
                 else
                 {
+                    FlurryAgent.logEvent("Sign_Up_Error");
                     Log.e("Sign Up", "Unknown error");
                 }
             }
             else
             {
+                FlurryAgent.logEvent("Sign_Up_Error");
                 Log.e("Sign Up", "Unknown error");
             }
 
@@ -357,6 +365,7 @@ public class SignupActivity extends Activity {
     }
 
     private void storeLogin(){
+        FlurryAgent.logEvent("Sign_Up_Finished");
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("phoneNumber", finalPhoneNumber);
@@ -408,6 +417,8 @@ public class SignupActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("Tag:","Message sent");
+            FlurryAgent.logEvent("Sign_Up_message_sent");
+
             try{
                 context.unregisterReceiver(smsSentReceiver);
             }catch(Exception e)

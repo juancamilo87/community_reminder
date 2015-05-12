@@ -24,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -65,6 +67,7 @@ public class SignInActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("SignInActivity");
         setContentView(R.layout.activity_sign_in_screen);
         context = this;
         signInLayOut = (RelativeLayout) findViewById(R.id.sign_in_button);
@@ -80,7 +83,6 @@ public class SignInActivity extends Activity {
         signInProgress = (ProgressBar) findViewById(R.id.sign_in_loading);
         disable();
         verifyUser();
-
 
 
 
@@ -161,6 +163,7 @@ public class SignInActivity extends Activity {
                 String responseCode = headers[3].getValue();
                 if(responseCode.equals("409")){
                     Toast.makeText(context, "Couldn't log in automatically", Toast.LENGTH_SHORT).show();
+                    FlurryAgent.logEvent("Error_Logging_In");
                     enable();
                 }
                 else if(responseCode.equals("201"))
@@ -179,17 +182,20 @@ public class SignInActivity extends Activity {
                             if(answer.equals("true"))
                             {
                                 Toast.makeText(context,"Logged in",Toast.LENGTH_SHORT).show();
+                                FlurryAgent.logEvent("Logged_in");
                                 goToMain();
                             }
                             else
                             {
                                 Toast.makeText(context,"The account has changed, please login again",Toast.LENGTH_SHORT).show();
+                                FlurryAgent.logEvent("Account_Changed");
                                 enable();
                             }
 
                         }
                     }catch(Exception e){
                         Toast.makeText(context, "Couldn't log in automatically", Toast.LENGTH_SHORT).show();
+                        FlurryAgent.logEvent("Error_Logging_In");
                         enable();
                     }
 
@@ -200,12 +206,14 @@ public class SignInActivity extends Activity {
                 else
                 {
                     Toast.makeText(context, "Couldn't log in automatically", Toast.LENGTH_SHORT).show();
+                    FlurryAgent.logEvent("Error_Logging_In");
                     enable();
                 }
             }
             else
             {
                 Toast.makeText(context, "Couldn't log in automatically", Toast.LENGTH_SHORT).show();
+                FlurryAgent.logEvent("Error_Logging_In");
                 enable();
             }
 

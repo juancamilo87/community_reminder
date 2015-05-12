@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.flurry.android.FlurryAgent;
+
 
 public class PedometerActivity extends Activity implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener{
     private TextView stepValues;
@@ -35,6 +37,7 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("PedometerActivity");
         setContentView(R.layout.activity_pedometer_screen);
         context = this;
 
@@ -173,6 +176,7 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
                     public void onClick(View v) {
                         EditText goal = (EditText) dialog.findViewById(R.id.text_goal);
                         if (goal.getText() != null){
+                            FlurryAgent.logEvent("Changed_Own_Pedometer_Goal");
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
                             Log.e("++++++++++++++", goal.getText().toString());
                             editor.putInt("yourGoal", Integer.parseInt(goal.getText().toString()));

@@ -18,6 +18,8 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 
+import com.flurry.android.FlurryAgent;
+
 import java.util.List;
 
 /**
@@ -216,6 +218,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            FlurryAgent.logEvent("SettingsActivity");
             addPreferencesFromResource(R.xml.pref_general);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences

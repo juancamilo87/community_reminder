@@ -22,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.flurry.android.FlurryAgent;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -66,6 +68,7 @@ public class ContactListActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FlurryAgent.logEvent("ContactListActivity");
         setContentView(R.layout.activity_contacts_screen);
         context = this;
         addContactBtn = (ImageButton) findViewById(R.id.addcontacts);
