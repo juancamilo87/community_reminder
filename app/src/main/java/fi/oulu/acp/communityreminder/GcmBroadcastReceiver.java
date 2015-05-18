@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +13,11 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
+
+import com.flurry.android.FlurryAgent;
+
+import java.util.HashMap;
 
 import fi.oulu.acp.communityreminder.db.ContactsDataSource;
 import fi.oulu.acp.communityreminder.db.NotificationsDataSource;
@@ -42,6 +46,14 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         String msg = extras.getString("Message", "");
         String num = extras.getString("PhoneNumber", "");
 
+        //Flurry
+        HashMap<String, String> eventParams = new HashMap<>();
+        eventParams.put("Title", tit);
+        eventParams.put("Message", msg);
+        eventParams.put("PhoneNumber", num);
+
+        FlurryAgent.logEvent("Notification", eventParams, true);
+
         if (tit.equals("Temperatures")){
             new GetTemperatureTimesTask().execute(context);
         }
@@ -60,13 +72,21 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         nm.notify(1, notification);*/
 
-        Intent newIntent = new Intent(context, NotificationActivity.class);
+        Intent newIntent = new Intent(context, DismissReceiver.class);
+        newIntent.setAction("LAUNCH");
 
-        PendingIntent pintentNotification = PendingIntent.getActivity(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + num));
-        PendingIntent piCall = PendingIntent.getActivity(context, 0, callIntent, 0);
+        PendingIntent pintentNotification = PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent dismissNotification = new Intent(context, DismissReceiver.class);
+        dismissNotification.setAction("DISMISS");
+        PendingIntent pendingDismiss = PendingIntent.getBroadcast(context, 0, dismissNotification, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent callIntent = new Intent(context, DismissReceiver.class);
+        //callIntent.setData(Uri.parse("tel:" + num));
+        callIntent.putExtra("Number", num);
+        callIntent.setAction("CALL");
+        PendingIntent piCall = PendingIntent.getBroadcast(context, 0, callIntent, 0);
 
 
         Notification.Builder noti = new Notification.Builder(context)
@@ -83,7 +103,9 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
                         .setSummaryText(source.getName(num)))
                 .addAction(R.mipmap.telephone,
                         "Call", piCall)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setDeleteIntent(pendingDismiss)
+                ;
         noti.setContentIntent(pintentNotification);
         nm.notify(1, noti.build());
         source.close();
@@ -96,6 +118,34 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
     }
 
     private void writeToDatabase(Context context){
+
+    }
+
+    public static class DismissReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("DISMISS")){
+                FlurryAgent.endTimedEvent("Notification");
+                //Toast.makeText(context, "Dismissed", Toast.LENGTH_SHORT).show();
+            }
+
+            if (intent.getAction().equals("CALL")){
+                String num = intent.getExtras().getString("Number", "");
+                FlurryAgent.endTimedEvent("Notification");
+                //Toast.makeText(context, "CALL", Toast.LENGTH_SHORT).show();
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + num));
+                context.startActivity(callIntent);
+            }
+
+            if (intent.getAction().equals("LAUNCH")){
+                FlurryAgent.endTimedEvent("Notification");
+                //Toast.makeText(context, "onClick", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(context, NotificationActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent1);
+            }
+        }
 
     }
 }

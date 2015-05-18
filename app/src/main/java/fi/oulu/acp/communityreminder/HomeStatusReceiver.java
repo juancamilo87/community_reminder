@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 
 public class HomeStatusReceiver extends BroadcastReceiver{
     WifiManager wifiManager;
+    private static boolean wasConnected;
 
     public HomeStatusReceiver(){
 
@@ -30,10 +31,12 @@ public class HomeStatusReceiver extends BroadcastReceiver{
         if (wifiManager.isWifiEnabled() &&
                 wifiManager.getConnectionInfo().getBSSID().equals(addr)){
             context.startService(service.putExtra("change", 1));
+            wasConnected = true;
         }
-        else if (!wifiManager.isWifiEnabled() ||
-                !wifiManager.getConnectionInfo().getBSSID().equals(addr)){
+        else if ((!wifiManager.isWifiEnabled() && wasConnected) ||
+                (wifiManager.isWifiEnabled() && !wifiManager.getConnectionInfo().getBSSID().equals(addr) && wasConnected)){
             context.startService(service.putExtra("change", 0));
+            wasConnected = false;
         }
     }
 }

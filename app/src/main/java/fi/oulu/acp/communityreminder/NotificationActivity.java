@@ -3,7 +3,6 @@ package fi.oulu.acp.communityreminder;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
