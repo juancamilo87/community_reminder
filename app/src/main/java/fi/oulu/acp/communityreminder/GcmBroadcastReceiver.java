@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.flurry.android.FlurryAgent;
 
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import fi.oulu.acp.communityreminder.db.ContactsDataSource;
@@ -52,7 +53,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         eventParams.put("PhoneNumber", num);
 
         FlurryAgent.logEvent("Notification", eventParams, true);
-
+        long startTime = GregorianCalendar.getInstance().getTimeInMillis();
         if (tit.equals("Temperatures")){
             new GetTemperatureTimesTask().execute(context);
         }
@@ -71,20 +72,30 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         notification.setLatestEventInfo(context, tit, msg, null);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         nm.notify(1, notification);*/
+        SharedPreferences prefs = context.getSharedPreferences("fi.oulu.acp.communityreminder",Context.MODE_PRIVATE);
 
+        int notificationId = prefs.getInt("notificationId",0)+1;
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("notificationId", notificationId);
+        editor.commit();
         Intent newIntent = new Intent(context, DismissReceiver.class);
         newIntent.setAction("LAUNCH");
-
+        newIntent.putExtra("startTime", startTime);
+        newIntent.putExtra("notificationId",notificationId);
 
         PendingIntent pintentNotification = PendingIntent.getBroadcast(context, 0, newIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent dismissNotification = new Intent(context, DismissReceiver.class);
         dismissNotification.setAction("DISMISS");
+        dismissNotification.putExtra("startTime", startTime);
+        dismissNotification.putExtra("notificationId",notificationId);
         PendingIntent pendingDismiss = PendingIntent.getBroadcast(context, 0, dismissNotification, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent callIntent = new Intent(context, DismissReceiver.class);
         //callIntent.setData(Uri.parse("tel:" + num));
+        callIntent.putExtra("startTime",startTime);
         callIntent.putExtra("Number", num);
+        callIntent.putExtra("notificationId",notificationId);
         callIntent.setAction("CALL");
         PendingIntent piCall = PendingIntent.getBroadcast(context, 0, callIntent, 0);
 
@@ -107,11 +118,10 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
                 .setDeleteIntent(pendingDismiss)
                 ;
         noti.setContentIntent(pintentNotification);
-        nm.notify(1, noti.build());
+        nm.notify(notificationId, noti.build());
         source.close();
 
         if (tit.equals("pedometerGoal")){
-            SharedPreferences.Editor editor = context.getSharedPreferences("fi.oulu.acp.communityreminder", Context.MODE_PRIVATE).edit();
             editor.putInt("yourGoal", Integer.parseInt(msg));
             editor.commit();
         }
@@ -125,21 +135,41 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("DISMISS")){
-                FlurryAgent.endTimedEvent("Notification");
+                long totalTime = GregorianCalendar.getInstance().getTimeInMillis() - intent.getLongExtra("startTime",GregorianCalendar.getInstance().getTimeInMillis());
+                HashMap<String, String> eventParams = new HashMap<>();
+                eventParams.put("Duration", totalTime+" ms");
+                eventParams.put("Response","Dismiss");
+                FlurryAgent.endTimedEvent("Notification",eventParams);
                 //Toast.makeText(context, "Dismissed", Toast.LENGTH_SHORT).show();
             }
 
             if (intent.getAction().equals("CALL")){
+                long totalTime = GregorianCalendar.getInstance().getTimeInMillis() - intent.getLongExtra("startTime",GregorianCalendar.getInstance().getTimeInMillis());
+                HashMap<String, String> eventParams = new HashMap<>();
+                eventParams.put("Duration", totalTime+" ms");
+                eventParams.put("Response","Call");
+                FlurryAgent.endTimedEvent("Notification",eventParams);
                 String num = intent.getExtras().getString("Number", "");
-                FlurryAgent.endTimedEvent("Notification");
                 //Toast.makeText(context, "CALL", Toast.LENGTH_SHORT).show();
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:" + num));
+                callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(callIntent);
+
+                SharedPreferences prefs = context.getSharedPreferences("fi.oulu.acp.communityreminder",Context.MODE_PRIVATE);
+
+                int notificationId = prefs.getInt("notificationId",0);
+
+                NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                nm.cancel(notificationId);
             }
 
             if (intent.getAction().equals("LAUNCH")){
-                FlurryAgent.endTimedEvent("Notification");
+                long totalTime = GregorianCalendar.getInstance().getTimeInMillis() - intent.getLongExtra("startTime",GregorianCalendar.getInstance().getTimeInMillis());
+                HashMap<String, String> eventParams = new HashMap<>();
+                eventParams.put("Duration", totalTime + " ms");
+                eventParams.put("Response","Launch");
+                FlurryAgent.endTimedEvent("Notification",eventParams);
                 //Toast.makeText(context, "onClick", Toast.LENGTH_SHORT).show();
                 Intent intent1 = new Intent(context, NotificationActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

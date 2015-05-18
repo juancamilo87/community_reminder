@@ -17,6 +17,7 @@ public class MyApplication extends Application {
 
         // configure Flurry
         FlurryAgent.setLogEnabled(true);
+        FlurryAgent.setLogEvents(true);
 
         // init Flurry
         FlurryAgent.init(this, MY_FLURRY_APIKEY);
