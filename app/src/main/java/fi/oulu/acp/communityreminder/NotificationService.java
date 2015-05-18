@@ -20,20 +20,23 @@ public class NotificationService extends IntentService {
     public NotificationService(){
         super("NotofocationService");
     }
-    @Override
+    /*@Override
     public void onCreate(){
         super.onCreate();
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-    }
 
-    @Override
+    }*/
+
+    /*@Override
     public void onStart(Intent intent, int startId) {
         Log.i("++++", "[SERVICE] onStart");
+        //onHandleIntent(intent);
         super.onStart(intent, startId);
-    }
+    }*/
 
-    @Override
+
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("++++", "[SERVICE] onStartCommand");
         sendNotif(intent);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -43,11 +46,11 @@ public class NotificationService extends IntentService {
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
         String messageType = gcm.getMessageType(intent);
-
+        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (!extras.isEmpty()){
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)){
-                Toast.makeText(getApplicationContext(), "MESSAGE", Toast.LENGTH_SHORT).show();
-                sendNotif(intent);
+                //Toast.makeText(getApplicationContext(), "MESSAGE", Toast.LENGTH_SHORT).show();
+                //sendNotif(intent);
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)){
                 Toast.makeText(getApplicationContext(), "Send Error", Toast.LENGTH_SHORT).show();
