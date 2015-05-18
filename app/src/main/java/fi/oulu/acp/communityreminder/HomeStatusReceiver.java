@@ -29,7 +29,7 @@ public class HomeStatusReceiver extends BroadcastReceiver{
         service.setAction(HomeStatusActivity.HOME_STATUS_ACTION);
 
         if (wifiManager.isWifiEnabled() &&
-                wifiManager.getConnectionInfo().getBSSID().equals(addr)){
+                wifiManager.getConnectionInfo().getBSSID().equals(addr)&&!wasConnected){
             context.startService(service.putExtra("change", 1));
             wasConnected = true;
         }

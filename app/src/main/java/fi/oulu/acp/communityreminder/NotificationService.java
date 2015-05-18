@@ -37,7 +37,7 @@ public class NotificationService extends IntentService {
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("++++", "[SERVICE] onStartCommand");
-
+        sendNotif(intent);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -49,8 +49,8 @@ public class NotificationService extends IntentService {
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (!extras.isEmpty()){
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)){
-                Toast.makeText(getApplicationContext(), "MESSAGE", Toast.LENGTH_SHORT).show();
-                sendNotif(intent);
+                //Toast.makeText(getApplicationContext(), "MESSAGE", Toast.LENGTH_SHORT).show();
+                //sendNotif(intent);
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR.equals(messageType)){
                 Toast.makeText(getApplicationContext(), "Send Error", Toast.LENGTH_SHORT).show();
