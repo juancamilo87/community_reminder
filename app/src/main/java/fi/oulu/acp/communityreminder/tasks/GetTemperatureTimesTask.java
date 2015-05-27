@@ -88,7 +88,7 @@ public class GetTemperatureTimesTask extends AsyncTask<Object, Void, HttpRespons
                         editor.putInt("timeTwenty",Integer.parseInt((String)jsonArray.get(4)));
                         editor.putInt("timeOther",Integer.parseInt((String)jsonArray.get(5)));
                         editor.apply();
-                        Toast.makeText(context, prefs.getInt("timeZero", 0), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(context, prefs.getInt("timeZero", 0), Toast.LENGTH_LONG).show();
 
                     }
                 }catch(Exception e){}
