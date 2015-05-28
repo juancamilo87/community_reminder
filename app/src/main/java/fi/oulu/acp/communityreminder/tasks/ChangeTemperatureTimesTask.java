@@ -70,7 +70,7 @@ public class ChangeTemperatureTimesTask  extends AsyncTask<Object, Void, HttpRes
             }
             else if(responseCode.equals("201"))
             {
-                Toast.makeText(context,"Temperature times changed",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"Temperature times changed",Toast.LENGTH_SHORT).show();
             }
             else if(responseCode.equals("202"))
             {

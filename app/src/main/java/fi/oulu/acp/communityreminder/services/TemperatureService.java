@@ -85,7 +85,7 @@ public class TemperatureService extends IntentService {
 
             int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0);
             float temp = (float) temperature/(float) 10;
-            Toast.makeText(getApplicationContext(),"Battery temp: "+temp,Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),"Battery temp: "+temp,Toast.LENGTH_LONG).show();
             if(temp>prevTemp)
             {
                 Log.d("TEmp","higher temp");
