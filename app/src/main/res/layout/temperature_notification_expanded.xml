@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="10dp" >
+    android:padding="10dp">
     <ImageView android:id="@+id/temp_noti_image"
         android:layout_width="@android:dimen/notification_large_icon_width"
         android:layout_height="@android:dimen/notification_large_icon_height"
@@ -127,6 +127,7 @@
     <ImageView
         android:id="@+id/temp_noti_top_divider"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="-8dp"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
@@ -158,6 +159,7 @@
         android:id="@+id/temp_noti_bottom_divider"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="-8dp"
         android:background="@android:color/darker_gray"
         android:layout_toRightOf="@id/temp_noti_image"
         android:layout_below="@id/temp_noti_linear"/>
@@ -166,7 +168,7 @@
         style="Custom Notification Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/temp_noti_name"
         android:layout_below="@id/temp_noti_bottom_divider"
         android:layout_toRightOf="@id/temp_noti_image"/>
