@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -59,7 +58,7 @@ public class VerifyContactsTask extends AsyncTask<Object, Void, HttpResponse> {
             //http post
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/verifyNumbers.php");
+            HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/verifyNumbers.php?key=fdsjfkiajl3ir3f");
 
             httppost.addHeader("content-type", "application/x-www-form-urlencoded");
             httppost.setEntity(params);

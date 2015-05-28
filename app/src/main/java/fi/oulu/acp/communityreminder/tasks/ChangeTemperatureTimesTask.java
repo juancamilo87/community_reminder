@@ -2,7 +2,6 @@ package fi.oulu.acp.communityreminder.tasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -17,13 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.List;
-
-import fi.oulu.acp.communityreminder.Contact;
-import fi.oulu.acp.communityreminder.db.ContactsDataSource;
-import fi.oulu.acp.communityreminder.db.FriendsDataSource;
 
 /**
  * Created by JuanCamilo on 4/6/2015.
@@ -56,7 +49,7 @@ public class ChangeTemperatureTimesTask  extends AsyncTask<Object, Void, HttpRes
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/changeTemperatures.php");
+            HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/changeTemperatures.php?key=fdsjfkiajl3ir3f");
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
             return response;

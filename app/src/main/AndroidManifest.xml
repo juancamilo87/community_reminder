@@ -151,11 +151,18 @@
 
         <receiver android:name=".TemperatureBroadcastReceiver" />
         <receiver android:name=".TemperatureNotificationManager" />
+        <receiver android:name=".tasks.CheckBirthdayTask" />
         <receiver android:name=".receivers.BatteryLevelReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BATTERY_LOW"/>
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".tasks.CheckBirthdayTask$AutoStart">
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+        </intent-filter>
+        </receiver>>
 
         <activity
             android:name=".NotificationActivity"

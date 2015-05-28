@@ -8,7 +8,6 @@ import com.flurry.android.FlurryAgent;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -153,7 +152,7 @@ public class ServerUtilities {
                     StringEntity params = new StringEntity(json);
 
 
-                    String url = "http://pan0166.panoulu.net/community/backend/broadcastAlert.php";
+                    String url = "http://pan0166.panoulu.net/community/backend/broadcastAlert.php?key=fdsjfkiajl3ir3f";
 
                     HttpClient httpClient = new DefaultHttpClient();
                     HttpPost httpPost = new HttpPost(url);

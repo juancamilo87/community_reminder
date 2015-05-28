@@ -33,11 +33,12 @@ public class GetTemperatureTimesTask extends AsyncTask<Object, Void, HttpRespons
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String userId = prefs.getString("phoneNumber","");
+        String key = prefs.getString("sec_key", "");
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
             String url = "http://pan0166.panoulu.net/community/backend/getTemperatures.php";
-            url+="?user_id="+userId;
+            url+="?user_id="+userId + "&key="+key;
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
             return response;

@@ -407,9 +407,13 @@ public class SignupActivity extends Activity {
 
                 storeRegistrationId(context, regid);
 
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                String key = prefs.getString("sec_key", "");
 
                 HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/registerUser.php");
+                String url = "http://pan0166.panoulu.net/community/backend/registerUser.php";
+                url += "?key="+key;
+                HttpPost httppost = new HttpPost(url);
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse response = httpclient.execute(httppost);
                 return response;

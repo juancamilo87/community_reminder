@@ -48,6 +48,19 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         String msg = extras.getString("Message", "");
         String num = extras.getString("PhoneNumber", "");
 
+        SharedPreferences prefs = context.getSharedPreferences("fi.oulu.acp.communityreminder",Context.MODE_PRIVATE);
+
+        int notificationId = prefs.getInt("notificationId",0)+1;
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("notificationId", notificationId);
+        editor.commit();
+
+        if (tit.equals("pm")){
+            editor.putInt("yourGoal", Integer.parseInt(msg));
+            editor.commit();
+            return;
+        }
+
         //Flurry
         HashMap<String, String> eventParams = new HashMap<>();
         eventParams.put("Title", tit);
@@ -74,12 +87,7 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         notification.setLatestEventInfo(context, tit, msg, null);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         nm.notify(1, notification);*/
-        SharedPreferences prefs = context.getSharedPreferences("fi.oulu.acp.communityreminder",Context.MODE_PRIVATE);
 
-        int notificationId = prefs.getInt("notificationId",0)+1;
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("notificationId", notificationId);
-        editor.commit();
         Intent newIntent = new Intent(context, DismissReceiver.class);
         newIntent.setAction("LAUNCH");
         newIntent.putExtra("startTime", startTime);
@@ -183,11 +191,6 @@ public class GcmBroadcastReceiver extends WakefulBroadcastReceiver{
         }
 
         source.close();
-
-        if (tit.equals("pedometerGoal")){
-            editor.putInt("yourGoal", Integer.parseInt(msg));
-            editor.commit();
-        }
     }
 
     private void writeToDatabase(Context context){
