@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="5dp" >
+    <ImageView android:id="@+id/temp_noti_not_image"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp" />
+    <TextView
+        android:textAppearance="@style/NotificationText"
+        android:id="@+id/temp_noti_not_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingRight="5dp"
+        style="Custom Notification Text"/>
+    <TextView android:id="@+id/temp_noti_not_title"
+        android:textAppearance="@style/NotificationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/temp_noti_not_image"
+        style="Custom Notification Title" />
+    <TextView android:id="@+id/temp_noti_not_message"
+        android:textAppearance="@style/NotificationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/temp_noti_not_image"
+        android:layout_below="@id/temp_noti_not_title"
+        style="Custom Notification Text" />
+    <TextView android:id="@+id/temp_noti_not_sender"
+        android:textAppearance="@style/NotificationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is him"
+        android:layout_toRightOf="@id/temp_noti_not_image"
+        android:layout_below="@id/temp_noti_not_message"
+        style="Custom Notification Text" />
+
+</RelativeLayout>

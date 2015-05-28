@@ -20,6 +20,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -71,6 +72,7 @@ public class HomeScreenActivity extends Activity {
     private int problemTaps;
     private GoogleApiClient mGoogleApiClient;
     private StepService stepService;
+    private Runnable mLongPressed;
 
 
     @Override
@@ -217,66 +219,6 @@ public class HomeScreenActivity extends Activity {
 
     }
 
-    private void initializeProblemButton() {
-        problemTaps = 0;
-        final Handler handler = new Handler();
-
-        final Runnable restartTapCount = new Runnable() {
-            @Override
-            public void run() {
-                problemTaps = 0;
-                Log.d("DEBUG", "problemTap resetted");
-            }
-        };
-
-        final int millisecondsPerTap = (getResources().getInteger(R.integer.seconds_for_emergency)*1000)/getResources().getInteger(R.integer.taps_for_emergency);
-        Log.d("DEBUG", "time between: "+millisecondsPerTap);
-        final int tapsForEmergency = getResources().getInteger(R.integer.taps_for_emergency);
-
-
-        btnProblem = (ImageButton) findViewById(R.id.LifeProblemButton);
-
-        btnProblem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handler.removeCallbacks(restartTapCount);
-                problemTaps++;
-                if(problemTaps==1)
-                {
-                    FlurryAgent.logEvent("Health_Emergency_Started");
-                }
-                if (problemTaps == tapsForEmergency) {
-                    toast.cancel();
-                    FlurryAgent.logEvent("Health_Emergency_Sent");
-                    Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
-                    String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "Health Emergency","My life is in danger and I need to see a doctor right now!");
-                    problemTaps = 0;
-                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-                    vibrator.vibrate(600);
-
-                } else {
-                    toast.setText("Tap " + (tapsForEmergency - problemTaps) + " more times to send life problem alert.");
-                    toast.show();
-                    handler.postDelayed(restartTapCount, millisecondsPerTap);
-                }
-            }
-        });
-
-        btnProblem.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                toast.setText("Tap " + tapsForEmergency + " times to send a life problem alert!");
-                toast.show();
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-                vibrator.vibrate(300);
-                return true;
-            }
-        });
-    }
-
     private void initializeEmergencyButton() {
         emergencyTaps = 0;
         final Handler handler = new Handler();
@@ -303,23 +245,20 @@ public class HomeScreenActivity extends Activity {
                 emergencyTaps++;
                 if(emergencyTaps==1)
                 {
-                    FlurryAgent.logEvent("Life_Problem_Started");
+                    FlurryAgent.logEvent("Health_Emergency_Started");
                 }
-                if(emergencyTaps==tapsForEmergency)
-                {
+                if (emergencyTaps == tapsForEmergency) {
                     toast.cancel();
-                    FlurryAgent.logEvent("Life_Problem_Sent");
+                    FlurryAgent.logEvent("Health_Emergency_Sent");
                     Toast.makeText(getApplicationContext(),"Emergency alert sent!",Toast.LENGTH_SHORT).show();
                     String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber","");
-                    ServerUtilities.sendMessage(uid, "Life Problem","I have some difficult problems to solve, please help me as soon as possible!");
+                    ServerUtilities.sendMessage(uid, "Health Emergency","My life is in danger and I need to see a doctor right now!");
                     emergencyTaps = 0;
-                    Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
                     vibrator.vibrate(600);
 
-                }
-                else
-                {
+                } else {
                     toast.setText("Tap " + (tapsForEmergency-emergencyTaps) + " more times to send an alert.");
                     toast.show();
                     handler.postDelayed(restartTapCount, millisecondsPerTap);
@@ -338,6 +277,109 @@ public class HomeScreenActivity extends Activity {
                 return true;
             }
         });
+    }
+
+    private void initializeProblemButtonOld() {
+        problemTaps = 0;
+        final Handler handler = new Handler();
+
+        final Runnable restartTapCount = new Runnable() {
+            @Override
+            public void run() {
+                problemTaps = 0;
+                Log.d("DEBUG", "problemTaps resetted");
+            }
+        };
+
+        final int millisecondsPerTap = (getResources().getInteger(R.integer.seconds_for_emergency)*1000)/getResources().getInteger(R.integer.taps_for_emergency);
+        Log.d("DEBUG", "time between: "+millisecondsPerTap);
+        final int tapsForEmergency = getResources().getInteger(R.integer.taps_for_emergency);
+
+
+        btnProblem = (ImageButton) findViewById(R.id.LifeProblemButton);
+
+        btnProblem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.removeCallbacks(restartTapCount);
+                problemTaps++;
+                if (problemTaps == 1) {
+                    FlurryAgent.logEvent("Life_Problem_Started");
+                }
+                if (problemTaps == tapsForEmergency) {
+                    toast.cancel();
+                    FlurryAgent.logEvent("Life_Problem_Sent");
+                    Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
+                    String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber", "");
+                    ServerUtilities.sendMessage(uid, "Life Problem", "I have some difficult problems to solve, please help me as soon as possible!");
+                    problemTaps = 0;
+                    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                    vibrator.vibrate(600);
+
+                } else {
+                    toast.setText("Tap " + (tapsForEmergency - problemTaps) + " more times to send life problem alert.");
+                    toast.show();
+                    handler.postDelayed(restartTapCount, millisecondsPerTap);
+                }
+            }
+        });
+
+        btnProblem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                toast.setText("Tap " + tapsForEmergency + " times to send a life problem alert!");
+                toast.show();
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                vibrator.vibrate(300);
+                return true;
+            }
+        });
+    }
+
+    private void initializeProblemButton() {
+
+        final Handler handler = new Handler();
+        mLongPressed = new Runnable() {
+            public void run() {
+
+                toast.cancel();
+                FlurryAgent.logEvent("Life_Problem_Sent");
+                Toast.makeText(getApplicationContext(), "Life problem alert sent!", Toast.LENGTH_SHORT).show();
+                String uid = PreferenceManager.getDefaultSharedPreferences(context).getString("phoneNumber", "");
+                ServerUtilities.sendMessage(uid, "Life Problem", "I have some difficult problems to solve, please help me as soon as possible!");
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                vibrator.vibrate(600);
+            }
+        };
+
+
+        btnProblem = (ImageButton) findViewById(R.id.LifeProblemButton);
+
+
+        btnProblem.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    handler.postDelayed(mLongPressed, getResources().getInteger(R.integer.seconds_for_emergency) * 1000);
+                if ((event.getAction() == MotionEvent.ACTION_UP))
+                    handler.removeCallbacks(mLongPressed);
+                return false;
+            }
+        });
+
+        btnProblem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toast.setText("Long press for " + getResources().getInteger(R.integer.seconds_for_emergency) + " seconds to send life problem alert.");
+                toast.show();
+                FlurryAgent.logEvent("Life_Problem_Started");
+
+            }
+        });
+
     }
 
     public ArrayList<Contact> getAllContacts() {

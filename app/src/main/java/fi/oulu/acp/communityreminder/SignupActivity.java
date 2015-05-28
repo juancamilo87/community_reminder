@@ -1,9 +1,13 @@
 package fi.oulu.acp.communityreminder;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -19,8 +23,10 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -43,8 +49,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
+
+import fi.oulu.acp.communityreminder.tasks.ChangeTemperatureTimesTask;
 
 
 public class SignupActivity extends Activity {
@@ -70,6 +83,7 @@ public class SignupActivity extends Activity {
     private RelativeLayout verifyPhone;
     private GoogleCloudMessaging gcm;
     private EditText edTBirthday;
+    private ImageButton btnBirth;
 
     private String regid;
 
@@ -106,8 +120,49 @@ public class SignupActivity extends Activity {
         }
         uid = manager.getDeviceId();
 
-        ImageButton btnBirth = (ImageButton) findViewById(R.id.btn_edit_birthday);
+        btnBirth = (ImageButton) findViewById(R.id.btn_edit_birthday);
         edTBirthday = (EditText) findViewById(R.id.editBirthday);
+
+        TextWatcher birthdayTextWatcher = new TextWatcher() {
+            private String current="";
+
+            private int length_before;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                length_before = edTBirthday.getText().length();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String input = s.toString();
+                    String result = "";
+                    boolean changed = false;
+                    result = input;
+                    if((input.length()==4 && length_before <input.length()) || (input.length()==7 && length_before <input.length()))
+                    {
+                        result = input + "-";
+                    }
+                    if((input.length()==5 && length_before < input.length())||(input.length()==8&& length_before < input.length()))
+                    {
+                        result = input.substring(0,input.length()-1)+"-"+input.substring(input.length()-1);
+                    }
+
+                    current = result;
+                    edTBirthday.setText(result);
+                    edTBirthday.setSelection(result.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        edTBirthday.addTextChangedListener(birthdayTextWatcher);
 
         btnBirth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,12 +198,22 @@ public class SignupActivity extends Activity {
 
     private void verifyPhone()
     {
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edTBirthday.getWindowToken(), 0);
+
+        if(!verifyBirthday())
+        {
+            Toast.makeText(this,"Please verify your birthday is correct (yyyy-mm-dd)", Toast.LENGTH_SHORT).show();
+            return;
+
+        }
         FlurryAgent.logEvent("Sign_Up_Started");
         disable();
         name = edTName.getText().toString();
         finalPhoneNumber = edTPhone.getText().toString();
         finalPhoneNumber = finalPhoneNumber.replaceAll(" ", "");
-
 
 
 
@@ -211,35 +276,12 @@ public class SignupActivity extends Activity {
                             if(!smsReceived)
                             {
                                 enable();
-                                Toast.makeText(sContext, "Error verifying phone number", Toast.LENGTH_SHORT);
+                                Toast.makeText(sContext, "Error verifying phone number", Toast.LENGTH_SHORT).show();
                                 FlurryAgent.logEvent("Sign_Up_message_timeout");
-
                                 try{
                                     sContext.unregisterReceiver(smsReceiver);
                                 }catch(Exception e){}
-
-                                final EditText editPhoneNumber = (EditText) findViewById(R.id.editPhoneNumber);
-
-                                textWatcher = new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-                                        editPhoneNumber.setError(null);
-                                        editPhoneNumber.removeTextChangedListener(textWatcher);
-                                    }
-                                };
-
-                                editPhoneNumber.setError("Verify phone number");
-                                editPhoneNumber.addTextChangedListener(textWatcher);
+                                dialogManualInput();
                             }
                         }
                     };
@@ -263,6 +305,48 @@ public class SignupActivity extends Activity {
             Toast.makeText(this,"Please only input numbers for the phone", Toast.LENGTH_SHORT).show();
         }
 
+
+    }
+
+    private void dialogManualInput() {
+
+        DialogFragment dialog = new ManualSignInDialogFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("phone",phone);
+//        dialog.setArguments(bundle);
+        dialog.show(getFragmentManager(), "ManualSignInDialogFragment");
+
+
+
+
+    }
+
+    private boolean verifyBirthday() {
+        birthday = edTBirthday.getText().toString();
+        if(birthday == null || birthday.equals("")){
+            return true;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+
+        try {
+
+            //if not valid, it will throw ParseException
+            Date date = sdf.parse(birthday);
+
+        } catch (ParseException e) {
+
+
+            return false;
+        }
+
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        if(Integer.parseInt(birthday.split("-")[0])>=year)
+            return false;
+
+        return true;
 
     }
 
@@ -395,6 +479,8 @@ public class SignupActivity extends Activity {
         loginLoading.setVisibility(View.VISIBLE);
         edTName.setEnabled(false);
         edTPhone.setEnabled(false);
+        btnBirth.setEnabled(false);
+        edTBirthday.setEnabled(false);
         verifyPhone.setEnabled(false);
         verifyPhone.setClickable(false);
     }
@@ -407,6 +493,8 @@ public class SignupActivity extends Activity {
         loginLoading.setVisibility(View.GONE);
         edTName.setEnabled(true);
         edTPhone.setEnabled(true);
+        edTBirthday.setEnabled(true);
+        btnBirth.setEnabled(true);
         verifyPhone.setEnabled(true);
         verifyPhone.setClickable(true);
     }
@@ -489,9 +577,95 @@ public class SignupActivity extends Activity {
     }
 
     public void updateBirthday(int year, int month, int day){
-        birthday = year+"-"+month+"-"+day;
+        birthday = year+"-";
+        if(month < 10)
+        {
+            birthday += "0"+month+ "-";
+        }
+        else
+            birthday += month+ "-";
+
+        if(day<10)
+            birthday += "0"+day;
+        else
+            birthday += day;
         edTBirthday.setText(birthday);
     }
 
+
+    public static class ManualSignInDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            builder.setView(inflater.inflate(R.layout.dialog_manual_sign_in, null))
+
+                    .setPositiveButton("Sign in", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+
+                            String code = ((EditText)getDialog().findViewById(R.id.dlg_code)).getText().toString().trim();
+                            ((SignupActivity)getActivity()).verifyCode(code);
+
+
+                        }
+                    })
+                    .setNegativeButton("Continue", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                            ((SignupActivity)getActivity()).errorSignIn();
+
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+
+    private void errorSignIn()
+    {
+        final EditText editPhoneNumber = (EditText) findViewById(R.id.editPhoneNumber);
+
+        textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                editPhoneNumber.setError(null);
+                editPhoneNumber.removeTextChangedListener(textWatcher);
+            }
+        };
+
+        editPhoneNumber.setError("Verify phone number");
+        editPhoneNumber.addTextChangedListener(textWatcher);
+    }
+
+    private void verifyCode(String code)
+    {
+        HashMap<String, String> eventParams = new HashMap<>();
+
+
+        if(code.equals(secretMessage.trim()))
+        {
+            eventParams.put("Success", "True");
+            registerUserPhp();
+        }
+        else
+        {
+            eventParams.put("Success", "False");
+            Toast.makeText(this, "The code doesn't match. Please try again", Toast.LENGTH_SHORT).show();
+        }
+
+        FlurryAgent.logEvent("Manual sign in", eventParams);
+    }
 
 }
