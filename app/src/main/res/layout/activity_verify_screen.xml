@@ -61,22 +61,22 @@
                 <ImageButton
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:src="@android:drawable/ic_menu_edit"
+                    android:background="@android:color/transparent"
+                    android:src="@android:drawable/ic_menu_today"
                     android:id="@+id/btn_edit_birthday"
-                    android:background="@drawable/edit"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:tint="@android:color/white" />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone"
+                    android:inputType="number"
                     android:ems="10"
+                    android:maxLength="10"
                     android:layout_toLeftOf="@id/btn_edit_birthday"
                     android:textColor="@android:color/white"
                     android:textColorHint="@android:color/white"
                     android:id="@+id/editBirthday"
-                    android:enabled="false"
                     android:hint="Birthday"
                     android:textSize="25dp" />
                 </RelativeLayout>

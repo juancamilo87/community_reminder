@@ -1,17 +1,23 @@
 package fi.oulu.acp.communityreminder;
 
+import android.app.*;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RemoteViews;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -25,6 +31,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -232,8 +240,59 @@ public class MainActivity extends ActionBarActivity {
 
     public void goToTemperature(View view)
     {
-        Intent intent = new Intent(this, TemperatureActivity.class);
-        startActivity(intent);
+
+
+
+
+//        RemoteViews notiViewNot = new RemoteViews(context.getPackageName(),R.layout.temperature_notification);
+//        notiViewNot.setImageViewResource(R.id.temp_noti_not_image, R.drawable.app_icon_notification);
+//        Calendar calendar = new GregorianCalendar();
+//        String time;
+//        if(calendar.get(Calendar.HOUR_OF_DAY)<10)
+//        {
+//            time = "0"+calendar.get(Calendar.HOUR_OF_DAY)+":";
+//        }
+//        else
+//        {
+//            time = calendar.get(Calendar.HOUR_OF_DAY)+":";
+//        }
+//        if(calendar.get(Calendar.MINUTE)<10)
+//        {
+//            time = time+"0"+calendar.get(Calendar.MINUTE);
+//        }
+//        else
+//        {
+//            time = time+calendar.get(Calendar.MINUTE);
+//        }
+//        notiViewNot.setTextViewText(R.id.temp_noti_not_time, time);
+//        notiViewNot.setTextViewText(R.id.temp_noti_not_title, "This is the Title");
+//        notiViewNot.setTextViewText(R.id.temp_noti_not_message, "This is the message");
+//        RemoteViews notiView = new RemoteViews(context.getPackageName(),R.layout.temperature_notification_expanded);
+//        notiView.setImageViewResource(R.id.temp_noti_image, R.drawable.app_icon_notification);
+//        notiView.setImageViewResource(R.id.temp_noti_image_call, R.mipmap.telephone);
+//        notiView.setTextViewText(R.id.temp_noti_time, time);
+//        notiView.setTextViewText(R.id.temp_noti_title, "This is the Title");
+//        notiView.setTextViewText(R.id.temp_noti_message, "This is the message");
+//        notiView.setTextViewText(R.id.temp_zero_right, time_zero + " minutes");
+//        notiView.setTextViewText(R.id.temp_five_right, time_five + " minutes");
+//        notiView.setTextViewText(R.id.temp_ten_right, time_ten + " minutes");
+//        notiView.setTextViewText(R.id.temp_fifteen_right, time_fifteen + " minutes");
+//        notiView.setTextViewText(R.id.temp_twenty_right, time_twenty + " minutes");
+//        notiView.setTextViewText(R.id.temp_other_right, time_other + " minutes");
+//        notiView.setOnClickPendingIntent(R.id.temp_noti_linear,piCall);
+//        notiView.setTextViewText(R.id.temp_noti_name,"Camilo");
+//        android.app.Notification.Builder noti = new android.app.Notification.Builder(context)
+//                .setContent(notiViewNot)
+//                .setSmallIcon(R.drawable.app_icon_notification)
+//                .setVibrate(new long[]{100, 500, 300, 500})
+//
+//                .setAutoCancel(true)
+//                //.setDeleteIntent(pendingDismiss)
+//                ;
+//        noti.setContentIntent(pintentNotification);
+//        Notification notif = noti.build();
+//        notif.bigContentView = notiView;
+//        nm.notify(notificationId, notif);
     }
 
     public void goToSettingsActivity(View view){

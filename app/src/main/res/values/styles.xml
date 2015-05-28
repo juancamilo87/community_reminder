@@ -12,4 +12,16 @@
         <item name="android:textSize">30sp</item>
     </style>
 
+    <style name="NotificationTitle" parent="android:TextAppearance.StatusBar.EventContent.Title">
+        <!--<item name="android:textColor">?android:attr/textColorPrimaryInverse</item>-->
+        <!--<item name="android:textStyle">bold</item>-->
+    </style>
+    <style name="NotificationText" parent="android:TextAppearance.StatusBar.EventContent">
+        <!--<item name="android:textColor">?android:attr/textColorPrimaryInverse</item>-->
+    </style>
+    <style name="NotificationTextButton" parent="android:TextAppearance.StatusBar.EventContent">
+    <item name="android:textStyle">bold</item>
+    <!--<item name="android:textColor">?android:attr/textColorPrimaryInverse</item>-->
+</style>
+
 </resources>
