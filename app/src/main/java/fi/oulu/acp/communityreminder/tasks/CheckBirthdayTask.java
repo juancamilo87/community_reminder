@@ -49,7 +49,7 @@ public class CheckBirthdayTask extends BroadcastReceiver{
 
                 int month = Integer.parseInt(parts[1]);
                 int day = Integer.parseInt(parts[2]);
-              
+
                 int currMonth = calendar.get(Calendar.MONTH);
                 int currDay = calendar.get(Calendar.DAY_OF_MONTH);
 
