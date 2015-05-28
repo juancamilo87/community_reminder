@@ -6,10 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -200,7 +197,7 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
                 //isRunning = false;
                 final Dialog dialog1 = new Dialog(PedometerActivity.this);
                 dialog1.setContentView(R.layout.dialog_yourgoal);
-                dialog1.setTitle("Set your for your family");
+                dialog1.setTitle("Set goal for your family");
                 Button btnOK = (Button) dialog1.findViewById(R.id.btn_goal_ok);
                 btnOK.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -209,7 +206,8 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
                         String g = goalRemote.getText().toString();
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         String phoneNumber = prefs.getString("phoneNumber", "");
-                        ServerUtilities.sendMessage(phoneNumber, "pedometerGoal", g);
+                        ServerUtilities.sendMessage(phoneNumber, "Pedometer Goal", "Family has set a new goal for you: " + g + " steps");
+                        ServerUtilities.sendMessage(phoneNumber, "pm", g);
                         dialog1.dismiss();
                     }
                 });

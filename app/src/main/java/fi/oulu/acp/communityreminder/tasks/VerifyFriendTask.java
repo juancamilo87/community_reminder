@@ -1,7 +1,5 @@
 package fi.oulu.acp.communityreminder.tasks;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,16 +12,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
-import fi.oulu.acp.communityreminder.Contact;
 import fi.oulu.acp.communityreminder.ContactListActivity;
-import fi.oulu.acp.communityreminder.FriendListAdapter;
-import fi.oulu.acp.communityreminder.db.ContactsDataSource;
 import fi.oulu.acp.communityreminder.db.FriendsDataSource;
 
 /**
@@ -44,7 +35,7 @@ public class VerifyFriendTask extends AsyncTask<Object, Void, HttpResponse> {
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/verifyFriend.php");
+            HttpPost httppost = new HttpPost("http://pan0166.panoulu.net/community/backend/verifyFriend.php?key=fdsjfkiajl3ir3f");
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
             return response;

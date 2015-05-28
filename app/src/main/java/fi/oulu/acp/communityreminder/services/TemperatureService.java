@@ -21,9 +21,9 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import fi.oulu.acp.communityreminder.ServerUtilities;
+import fi.oulu.acp.communityreminder.tasks.CheckBirthdayTask;
 
 
 public class TemperatureService extends IntentService {
@@ -182,6 +182,8 @@ public class TemperatureService extends IntentService {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userId = prefs.getString("phoneNumber","");
         startService();
+        CheckBirthdayTask birthdayTask = new CheckBirthdayTask();
+        birthdayTask.setAlarm(this);
         return START_STICKY;
     }
 

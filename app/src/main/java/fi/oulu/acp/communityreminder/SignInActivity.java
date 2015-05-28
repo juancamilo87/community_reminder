@@ -1,24 +1,14 @@
 package fi.oulu.acp.communityreminder;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,27 +19,13 @@ import com.flurry.android.FlurryAgent;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-import fi.oulu.acp.communityreminder.tasks.VerifyContactsTask;
 
 /**
  * Created by JuanCamilo on 3/28/2015.
@@ -57,6 +33,7 @@ import fi.oulu.acp.communityreminder.tasks.VerifyContactsTask;
 public class SignInActivity extends Activity {
 
     private String name;
+    private String key;
     private String phoneNumber;
     private String device_id;
     private TextView txtSignIn;
@@ -68,6 +45,12 @@ public class SignInActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FlurryAgent.logEvent("SignInActivity");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("sec_key", "fdsjfkiajl3ir3f");
+        editor.apply();
+        editor.commit();
+
         setContentView(R.layout.activity_sign_in_screen);
         context = this;
         signInLayOut = (RelativeLayout) findViewById(R.id.sign_in_button);
@@ -95,6 +78,7 @@ public class SignInActivity extends Activity {
             name = prefs.getString("name","none");
             phoneNumber = prefs.getString("phoneNumber","none");
             device_id = prefs.getString("uid","none");
+            key = prefs.getString("sec_key", "");
             new HTTPGet().execute(this);
         }
         else
@@ -146,7 +130,7 @@ public class SignInActivity extends Activity {
             try{
                 HttpClient httpclient = new DefaultHttpClient();
                 String url = "http://pan0166.panoulu.net/community/backend/verifyUser.php";
-                url += "?uid="+device_id+"&phoneNumber="+phoneNumber;
+                url += "?uid="+device_id+"&phoneNumber="+phoneNumber+"&key="+key;
                 HttpGet httpget = new HttpGet(url);
                 HttpResponse response = httpclient.execute(httpget);
                 return response;

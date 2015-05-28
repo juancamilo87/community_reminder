@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -44,8 +43,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 import fi.oulu.acp.communityreminder.db.ContactsDataSource;
 import fi.oulu.acp.communityreminder.db.FriendsDataSource;
@@ -446,11 +443,12 @@ public class HomeScreenActivity extends Activity {
             context = (Context) objects[0];
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             String phoneNumber = prefs.getString("phoneNumber","none");
+            String key = prefs.getString("sec_key", "");
             //http get
             try{
                 HttpClient httpclient = new DefaultHttpClient();
                 String url = "http://pan0166.panoulu.net/community/backend/getFriends.php";
-                url += "?user_id="+phoneNumber;
+                url += "?user_id="+phoneNumber + "&key=" + key;
                 HttpGet httpget = new HttpGet(url);
                 HttpResponse response = httpclient.execute(httpget);
                 return response;

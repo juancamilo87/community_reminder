@@ -73,7 +73,7 @@ public class NotificationService extends IntentService {
                 notif.setLatestEventInfo(this, "Home Status", "Inside", null);
                 notif.flags |= Notification.FLAG_AUTO_CANCEL;
                 nm.notify(1, notif);*/
-                ServerUtilities.sendMessage(userID, "HomeStatus", "Connected");
+                ServerUtilities.sendMessage(userID, "Home Status", "Connected");
             }
             else if (state == 0){
                 /*Notification notif = new Notification(R.drawable.abc_ab_share_pack_holo_light, "OUTSIDE",
@@ -81,7 +81,7 @@ public class NotificationService extends IntentService {
                 notif.setLatestEventInfo(this, "Home Status", "Outside", null);
                 notif.flags |= Notification.FLAG_AUTO_CANCEL;
                 nm.notify(1, notif);*/
-                ServerUtilities.sendMessage(userID, "HomeStatus", "Disconnected");
+                ServerUtilities.sendMessage(userID, "Home Status", "Disconnected");
             }
         }
         stopSelf();

@@ -143,7 +143,7 @@ public class MainActivity extends ActionBarActivity {
                     //par.put("regId", regid);
                     //par.put("message", "Hey!");
                     //ServerUtilities.post(url, par);
-                    url += "?user_id=" + "09876543210" + "&message=" + "BLA";
+                    url += "?user_id=" + "09876543210" + "&message=" + "BLA" + "&key=" + "";
                     HttpClient httpClient = new DefaultHttpClient();
                     HttpGet httpGet = new HttpGet(url);
 
