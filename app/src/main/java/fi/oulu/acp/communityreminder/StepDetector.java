@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class StepDetector implements SensorEventListener
 {
     private final static String TAG = "StepDetector";
-    private float   mLimit = 10;
+    private float   mLimit = 33.75f;
     private float   mLastValues[] = new float[3*2];
     private float   mScale[] = new float[2];
     private float   mYOffset;

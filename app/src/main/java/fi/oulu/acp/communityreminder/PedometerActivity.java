@@ -176,11 +176,16 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
                             FlurryAgent.logEvent("Changed_Own_Pedometer_Goal");
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
                             Log.e("++++++++++++++", goal.getText().toString());
-                            editor.putInt("yourGoal", Integer.parseInt(goal.getText().toString()));
-                            stepsGoal = Integer.parseInt(goal.getText().toString());
-                            stepsBar.setMax(stepsGoal);
-                            editor.commit();
-                            dialog.dismiss();
+                            if (!goal.getText().toString().equals("")){
+                                editor.putInt("yourGoal", Integer.parseInt(goal.getText().toString()));
+                                stepsGoal = Integer.parseInt(goal.getText().toString());
+                                stepsBar.setMax(stepsGoal);
+                                editor.commit();
+                                dialog.dismiss();
+                            }
+                            else
+                                dialog.dismiss();
+
                         }
                     }
                 });
@@ -204,11 +209,16 @@ public class PedometerActivity extends Activity implements View.OnClickListener,
                     public void onClick(View v) {
                         EditText goalRemote = (EditText) dialog1.findViewById(R.id.text_goal);
                         String g = goalRemote.getText().toString();
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        String phoneNumber = prefs.getString("phoneNumber", "");
-                        ServerUtilities.sendMessage(phoneNumber, "Pedometer Goal", "Family has set a new goal for you: " + g + " steps");
-                        ServerUtilities.sendMessage(phoneNumber, "pm", g);
-                        dialog1.dismiss();
+                        if (!g.equals("")){
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            String phoneNumber = prefs.getString("phoneNumber", "");
+                            ServerUtilities.sendMessage(phoneNumber, "Pedometer Goal", "Family has set a new goal for you: " + g + " steps");
+                            ServerUtilities.sendMessage(phoneNumber, "pm", g);
+                            dialog1.dismiss();
+                        }
+                        else
+                            dialog1.dismiss();
+
                     }
                 });
                 dialog1.show();
